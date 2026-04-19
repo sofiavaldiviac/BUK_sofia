@@ -2943,6 +2943,899 @@ save_plot(p, "2_8b_own_development_gender_x_role", w = 9, h = 5.5)
 cat("  Task 13 complete: saved to figures/\n")
 
 # ==============================================================================
-cat("\n=== All Tasks 01-13 complete ===\n")
+# TASK 14: JOB ATTRIBUTE PREFERENCES (Section 3.1)
+# ==============================================================================
+cat("\n--- Task 14: Job Attributes ---\n")
+
+# --- 3.1a: Top job attributes ranked by gender ------------------------------
+val_vars <- c("val_salary_rec", "val_benefits_rec", "val_proximity_rec",
+              "val_stimulating_rec", "val_flexibility_rec", "val_remote_rec",
+              "val_growth_rec", "val_culture_rec", "val_environment_rec",
+              "val_social_impact_rec")
+val_labels <- c("Salary & incentives", "Benefits", "Proximity",
+                "Stimulating tasks", "Flexibility", "Remote/hybrid",
+                "Growth & development", "Culture & values",
+                "Good environment", "Social impact")
+
+d <- df_bin %>%
+  select(gender, all_of(val_vars)) %>%
+  pivot_longer(-gender, names_to = "attribute", values_to = "selected") %>%
+  filter(!is.na(selected)) %>%
+  group_by(gender, attribute) %>%
+  summarise(pct = mean(selected == 1) * 100, .groups = "drop") %>%
+  mutate(attr_label = val_labels[match(attribute, val_vars)])
+
+# Sort by female ranking
+fem_order <- d %>% filter(gender == "Femenino") %>% arrange(pct) %>% pull(attr_label)
+d$attr_label <- factor(d$attr_label, levels = fem_order)
+
+p <- ggplot(d, aes(x = attr_label, y = pct, fill = gender)) +
+  geom_col(position = position_dodge(0.8), width = 0.7) +
+  geom_text(aes(label = paste0(round(pct), "%")),
+            position = position_dodge(0.8), hjust = -0.2, size = 2.8) +
+  coord_flip() +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Top Job Attributes by Gender",
+       subtitle = "% ranking each attribute as important (sorted by women's ranking)",
+       x = "", y = "% Important") +
+  theme_survey +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2)))
+save_plot(p, "3_1a_job_attributes_by_gender", w = 10, h = 6)
+
+# --- 3.1a interaction: by income tier ----------------------------------------
+d <- df_bin %>%
+  filter(!is.na(income_tier)) %>%
+  select(gender, income_tier, all_of(val_vars)) %>%
+  pivot_longer(cols = all_of(val_vars), names_to = "attribute", values_to = "selected") %>%
+  filter(!is.na(selected)) %>%
+  group_by(gender, income_tier, attribute) %>%
+  summarise(pct = mean(selected == 1) * 100, .groups = "drop") %>%
+  mutate(attr_label = val_labels[match(attribute, val_vars)])
+
+# Focus on key attributes: salary, flexibility, benefits
+d_key <- d %>% filter(attr_label %in% c("Salary & incentives", "Flexibility",
+                                          "Benefits", "Remote/hybrid"))
+d_key$attr_label <- factor(d_key$attr_label)
+
+p <- ggplot(d_key, aes(x = income_tier, y = pct, fill = gender)) +
+  geom_col(position = position_dodge(0.8), width = 0.7) +
+  geom_text(aes(label = paste0(round(pct), "%")),
+            position = position_dodge(0.8), vjust = -0.4, size = 2.5) +
+  facet_wrap(~attr_label) +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Key Job Attributes by Gender x Income",
+       subtitle = "Do low-income women prioritize salary while high-income prioritize flexibility?",
+       x = "Income Tier", y = "% Important") +
+  theme_survey +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_1a_key_attributes_gender_x_income", w = 11, h = 6)
+
+# --- 3.1a interaction: by age ------------------------------------------------
+d_age <- df_bin %>%
+  filter(!is.na(generation)) %>%
+  select(gender, generation, val_flexibility_rec, val_benefits_rec,
+         val_salary_rec, val_remote_rec) %>%
+  pivot_longer(cols = c(val_flexibility_rec, val_benefits_rec,
+                        val_salary_rec, val_remote_rec),
+               names_to = "attribute", values_to = "selected") %>%
+  filter(!is.na(selected)) %>%
+  mutate(attr_label = case_when(
+    grepl("flexibility", attribute) ~ "Flexibility",
+    grepl("benefits", attribute) ~ "Benefits",
+    grepl("salary", attribute) ~ "Salary",
+    grepl("remote", attribute) ~ "Remote/hybrid"
+  )) %>%
+  group_by(gender, generation, attr_label) %>%
+  summarise(pct = mean(selected == 1) * 100, .groups = "drop")
+
+p <- ggplot(d_age, aes(x = generation, y = pct, color = gender, group = gender)) +
+  geom_line(linewidth = 1) + geom_point(size = 2) +
+  facet_wrap(~attr_label) +
+  scale_color_manual(values = pal_gender) +
+  labs(title = "Key Job Attributes by Gender x Age",
+       x = "Age Group", y = "% Important") +
+  theme_survey +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+save_plot(p, "3_1a_key_attributes_gender_x_age", w = 10, h = 6)
+
+# --- 3.1b: Proximity to workplace importance by gender ----------------------
+d <- df_bin %>%
+  filter(!is.na(val_proximity_rec)) %>%
+  group_by(gender) %>%
+  summarise(pct = mean(val_proximity_rec == 1) * 100, n = n(), .groups = "drop")
+
+p <- ggplot(d, aes(x = gender, y = pct, fill = gender)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = paste0(round(pct), "%")), vjust = -0.4, size = 4) +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Proximity to Workplace Importance by Gender",
+       subtitle = "Is workplace proximity more important to women (commute as constraint)?",
+       x = "", y = "% Important") +
+  theme_survey + guides(fill = "none") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_1b_proximity_by_gender")
+
+# --- 3.1b interaction: by age ------------------------------------------------
+d <- df_bin %>%
+  filter(!is.na(val_proximity_rec), !is.na(generation)) %>%
+  group_by(gender, generation) %>%
+  summarise(pct = mean(val_proximity_rec == 1) * 100, n = n(), .groups = "drop")
+
+p <- ggplot(d, aes(x = generation, y = pct, color = gender, group = gender)) +
+  geom_line(linewidth = 1) + geom_point(size = 3) +
+  geom_text(aes(label = paste0(round(pct), "%")), vjust = -1, size = 3.2) +
+  scale_color_manual(values = pal_gender) +
+  labs(title = "Proximity Importance by Gender x Age",
+       subtitle = "Women with young children value proximity more?",
+       x = "Age Group", y = "% Important") +
+  theme_survey +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.15)))
+save_plot(p, "3_1b_proximity_gender_x_age")
+
+# --- 3.1c: Social impact valuation by gender --------------------------------
+d <- df_bin %>%
+  filter(!is.na(val_social_impact_rec)) %>%
+  group_by(gender) %>%
+  summarise(pct = mean(val_social_impact_rec == 1) * 100, n = n(), .groups = "drop")
+
+p <- ggplot(d, aes(x = gender, y = pct, fill = gender)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = paste0(round(pct), "%")), vjust = -0.4, size = 4) +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Social Impact Valuation by Gender",
+       subtitle = "Do women value social contribution more (compensating differential)?",
+       x = "", y = "% Important") +
+  theme_survey + guides(fill = "none") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_1c_social_impact_by_gender")
+
+# --- 3.1c interaction: by income tier ----------------------------------------
+d <- df_bin %>%
+  filter(!is.na(val_social_impact_rec), !is.na(income_tier)) %>%
+  group_by(gender, income_tier) %>%
+  summarise(pct = mean(val_social_impact_rec == 1) * 100, n = n(), .groups = "drop")
+
+p <- plot_grouped_bar(d, "income_tier", "pct",
+                      title = "Social Impact Valuation by Gender x Income",
+                      xlab = "Income Tier", ylab = "% Important")
+save_plot(p, "3_1c_social_impact_gender_x_income")
+
+cat("  Task 14 complete: saved to figures/\n")
+
+# ==============================================================================
+# TASK 15: ORGANIZATIONAL TRUST & SATISFACTION (Section 3.2)
+# ==============================================================================
+cat("\n--- Task 15: Organizational Trust ---\n")
+
+# --- 3.2a: Trust across all organizational levels by gender -----------------
+trust_vars <- c("trust_boss_rec2", "trust_org_rec2", "trust_mgmt_rec2",
+                "trust_hr_rec2", "trust_peers_rec2")
+trust_labels <- c("Direct Boss", "Organization", "Management", "HR", "Peers")
+
+d <- df_bin %>%
+  select(gender, all_of(trust_vars)) %>%
+  pivot_longer(-gender, names_to = "level", values_to = "value") %>%
+  filter(!is.na(value)) %>%
+  group_by(gender, level) %>%
+  summarise(pct = mean(value == 3) * 100, .groups = "drop") %>%
+  mutate(level_label = trust_labels[match(level, trust_vars)],
+         level_label = factor(level_label, levels = rev(trust_labels)))
+
+p <- ggplot(d, aes(x = level_label, y = pct, fill = gender)) +
+  geom_col(position = position_dodge(0.8), width = 0.7) +
+  geom_text(aes(label = paste0(round(pct), "%")),
+            position = position_dodge(0.8), hjust = -0.2, size = 3.2) +
+  coord_flip() +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Trust/Satisfaction Across Organizational Levels by Gender",
+       subtitle = "% satisfied — do women trust management, HR, and peers differently?",
+       x = "", y = "% Satisfied") +
+  theme_survey +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2)))
+save_plot(p, "3_2a_trust_levels_by_gender", w = 9, h = 5)
+
+# --- 3.2a interaction: by org size -------------------------------------------
+d <- df_bin %>%
+  filter(!is.na(org_size_f)) %>%
+  select(gender, org_size_f, all_of(trust_vars)) %>%
+  pivot_longer(cols = all_of(trust_vars), names_to = "level", values_to = "value") %>%
+  filter(!is.na(value)) %>%
+  group_by(gender, org_size_f, level) %>%
+  summarise(pct = mean(value == 3) * 100, .groups = "drop") %>%
+  mutate(level_label = trust_labels[match(level, trust_vars)])
+
+# Focus on HR trust by org size (most relevant for HR formalization)
+d_hr <- d %>% filter(level_label == "HR")
+p <- plot_grouped_bar(d_hr, "org_size_f", "pct",
+                      title = "HR Trust by Gender x Org Size",
+                      xlab = "Organization Size", ylab = "% Satisfied with HR")
+save_plot(p, "3_2a_trust_hr_gender_x_orgsize")
+
+# --- 3.2b: Supervisor satisfaction by gender x leadership -------------------
+d <- df_bin %>%
+  filter(!is.na(satis_leadership_rec2), !is.na(is_leader)) %>%
+  group_by(gender, is_leader) %>%
+  summarise(pct = mean(satis_leadership_rec2 == 3) * 100, n = n(), .groups = "drop")
+
+p <- plot_grouped_bar(d, "is_leader", "pct",
+                      title = "Supervisor Satisfaction by Gender x Leadership",
+                      subtitle = "Do women leaders rate their supervisors differently?",
+                      xlab = "", ylab = "% Satisfied with Boss")
+save_plot(p, "3_2b_supervisor_satis_gender_x_leader")
+
+# --- 3.2c: NPS by gender (promoters / passives / detractors) ----------------
+d <- df_bin %>%
+  filter(!is.na(enps)) %>%
+  mutate(nps_cat = case_when(
+    enps >= 9 ~ "Promoter (9-10)",
+    enps >= 7 ~ "Passive (7-8)",
+    enps <= 6 ~ "Detractor (0-6)"
+  ),
+  nps_cat = factor(nps_cat,
+                   levels = c("Detractor (0-6)", "Passive (7-8)", "Promoter (9-10)"))) %>%
+  group_by(gender, nps_cat) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(gender) %>%
+  mutate(pct = n / sum(n) * 100)
+
+p <- ggplot(d, aes(x = gender, y = pct, fill = nps_cat)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = paste0(round(pct), "%")),
+            position = position_stack(vjust = 0.5), size = 3.5) +
+  scale_fill_manual(values = c("Detractor (0-6)" = "#E74C3C",
+                               "Passive (7-8)" = "#F39C12",
+                               "Promoter (9-10)" = "#27AE60")) +
+  labs(title = "eNPS Distribution by Gender",
+       subtitle = "Are women less likely to recommend their employer?",
+       x = "", y = "%", fill = "NPS Category") +
+  theme_survey
+save_plot(p, "3_2c_nps_by_gender")
+
+# --- 3.2c interaction: by income tier ----------------------------------------
+d <- df_bin %>%
+  filter(!is.na(enps), !is.na(income_tier)) %>%
+  mutate(promoter = as.numeric(enps >= 9)) %>%
+  group_by(gender, income_tier) %>%
+  summarise(pct = mean(promoter) * 100, n = n(), .groups = "drop")
+
+p <- plot_grouped_bar(d, "income_tier", "pct",
+                      title = "NPS Promoters by Gender x Income",
+                      xlab = "Income Tier", ylab = "% Promoters (9-10)")
+save_plot(p, "3_2c_nps_promoters_gender_x_income")
+
+# --- 3.2c interaction: by org size -------------------------------------------
+d <- df_bin %>%
+  filter(!is.na(enps), !is.na(org_size_f)) %>%
+  mutate(promoter = as.numeric(enps >= 9)) %>%
+  group_by(gender, org_size_f) %>%
+  summarise(pct = mean(promoter) * 100, n = n(), .groups = "drop")
+
+p <- plot_grouped_bar(d, "org_size_f", "pct",
+                      title = "NPS Promoters by Gender x Org Size",
+                      xlab = "Organization Size", ylab = "% Promoters (9-10)")
+save_plot(p, "3_2c_nps_promoters_gender_x_orgsize")
+
+cat("  Task 15 complete: saved to figures/\n")
+
+# ==============================================================================
+# TASK 16: SALARY ADJUSTMENTS & INSTITUTIONAL RESPONSE (Section 3.3)
+# ==============================================================================
+cat("\n--- Task 16: Salary Adjustments ---\n")
+
+# --- 3.3a: Did organization adjust salaries in 2025 by gender ---------------
+d <- df_bin %>%
+  filter(!is.na(salary_adjustment)) %>%
+  group_by(gender) %>%
+  summarise(pct = mean(salary_adjustment == 1) * 100, n = n(), .groups = "drop")
+
+p <- ggplot(d, aes(x = gender, y = pct, fill = gender)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = paste0(round(pct), "%")), vjust = -0.4, size = 4) +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Organization Adjusted Salaries in 2025",
+       subtitle = "% reporting their org made a general salary adjustment",
+       x = "", y = "% Yes") +
+  theme_survey + guides(fill = "none") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_3a_salary_adjustment_by_gender")
+
+# --- 3.3a interaction: by org size -------------------------------------------
+d <- df_bin %>%
+  filter(!is.na(salary_adjustment), !is.na(org_size_f)) %>%
+  group_by(gender, org_size_f) %>%
+  summarise(pct = mean(salary_adjustment == 1) * 100, n = n(), .groups = "drop")
+
+p <- plot_grouped_bar(d, "org_size_f", "pct",
+                      title = "Salary Adjustment by Gender x Org Size",
+                      xlab = "Organization Size", ylab = "% Yes")
+save_plot(p, "3_3a_salary_adjustment_gender_x_orgsize")
+
+# --- 3.3a interaction: by income tier ----------------------------------------
+d <- df_bin %>%
+  filter(!is.na(salary_adjustment), !is.na(income_tier)) %>%
+  group_by(gender, income_tier) %>%
+  summarise(pct = mean(salary_adjustment == 1) * 100, n = n(), .groups = "drop")
+
+p <- plot_grouped_bar(d, "income_tier", "pct",
+                      title = "Salary Adjustment by Gender x Income",
+                      xlab = "Income Tier", ylab = "% Yes")
+save_plot(p, "3_3a_salary_adjustment_gender_x_income")
+
+# --- 3.3a interaction: by role -----------------------------------------------
+d <- df_bin %>%
+  filter(!is.na(salary_adjustment), !is.na(role_label)) %>%
+  group_by(gender, role_label) %>%
+  summarise(pct = mean(salary_adjustment == 1) * 100, n = n(), .groups = "drop") %>%
+  filter(!is.na(role_label))
+
+p <- ggplot(d, aes(x = role_label, y = pct, fill = gender)) +
+  geom_col(position = position_dodge(0.8), width = 0.7) +
+  geom_text(aes(label = paste0(round(pct), "%")),
+            position = position_dodge(0.8), hjust = -0.2, size = 3) +
+  coord_flip() +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Salary Adjustment Awareness by Gender x Role",
+       x = "", y = "% Yes") +
+  theme_survey +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2)))
+save_plot(p, "3_3a_salary_adjustment_gender_x_role", w = 9, h = 5.5)
+
+cat("  Task 16 complete: saved to figures/\n")
+
+# ==============================================================================
+# TASK 17: WORKLOAD & STRESS PATTERNS (Section 3.4)
+# ==============================================================================
+cat("\n--- Task 17: Workload & Stress ---\n")
+
+# --- 3.4a: Workload satisfaction by gender ----------------------------------
+d <- df_bin %>%
+  filter(!is.na(satis_workload_rec2)) %>%
+  group_by(gender) %>%
+  summarise(pct = mean(satis_workload_rec2 == 3) * 100, n = n(), .groups = "drop")
+
+p <- ggplot(d, aes(x = gender, y = pct, fill = gender)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = paste0(round(pct), "%")), vjust = -0.4, size = 4) +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Workload Satisfaction by Gender",
+       subtitle = "% satisfied with their workload",
+       x = "", y = "% Satisfied") +
+  theme_survey + guides(fill = "none") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_4a_workload_satis_by_gender")
+
+# --- 3.4a interaction: by work schedule x remote -----------------------------
+d <- df_bin %>%
+  filter(!is.na(satis_workload_rec2), !is.na(schedule_f), !is.na(remote_f)) %>%
+  group_by(gender, schedule_f, remote_f) %>%
+  summarise(pct = mean(satis_workload_rec2 == 3) * 100, n = n(), .groups = "drop") %>%
+  filter(n >= 10)
+
+p <- ggplot(d, aes(x = remote_f, y = pct, fill = gender)) +
+  geom_col(position = position_dodge(0.8), width = 0.7) +
+  geom_text(aes(label = paste0(round(pct), "%")),
+            position = position_dodge(0.8), vjust = -0.4, size = 2.5) +
+  facet_wrap(~schedule_f) +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Workload Satisfaction by Gender x Schedule x Remote",
+       x = "Remote Work Level", y = "% Satisfied") +
+  theme_survey +
+  theme(axis.text.x = element_text(angle = 25, hjust = 1)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_4a_workload_satis_gender_x_schedule_x_remote", w = 12, h = 5)
+
+# --- 3.4a interaction: by leadership ----------------------------------------
+d <- df_bin %>%
+  filter(!is.na(satis_workload_rec2), !is.na(is_leader)) %>%
+  group_by(gender, is_leader) %>%
+  summarise(pct = mean(satis_workload_rec2 == 3) * 100, n = n(), .groups = "drop")
+
+p <- plot_grouped_bar(d, "is_leader", "pct",
+                      title = "Workload Satisfaction by Gender x Leadership",
+                      xlab = "", ylab = "% Satisfied")
+save_plot(p, "3_4a_workload_satis_gender_x_leader")
+
+# --- 3.4b: Stress by gender x work schedule x remote (faceted) --------------
+d <- df_bin %>%
+  filter(!is.na(emo_stressed_rec2), !is.na(schedule_f), !is.na(remote_f)) %>%
+  group_by(gender, schedule_f, remote_f) %>%
+  summarise(pct = mean(emo_stressed_rec2 >= 3, na.rm = TRUE) * 100,
+            n = n(), .groups = "drop") %>%
+  filter(n >= 10)
+
+p <- ggplot(d, aes(x = remote_f, y = pct, fill = gender)) +
+  geom_col(position = position_dodge(0.8), width = 0.7) +
+  geom_text(aes(label = paste0(round(pct), "%")),
+            position = position_dodge(0.8), vjust = -0.4, size = 2.5) +
+  facet_wrap(~schedule_f) +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Stress Frequency by Gender x Work Schedule x Remote",
+       subtitle = "Does part-time or remote work reduce stress for women?",
+       x = "Remote Work Level", y = "% Frequent/Always Stressed") +
+  theme_survey +
+  theme(axis.text.x = element_text(angle = 25, hjust = 1)) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_4b_stress_gender_x_schedule_x_remote", w = 12, h = 5)
+
+# --- 3.4c: Depression frequency by gender -----------------------------------
+d <- df_bin %>%
+  filter(!is.na(emo_depressed_rec2)) %>%
+  group_by(gender, emo_depressed_rec2) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(gender) %>%
+  mutate(pct = n / sum(n) * 100)
+
+p <- ggplot(d, aes(x = factor(emo_depressed_rec2), y = pct, fill = gender)) +
+  geom_col(position = position_dodge(0.8), width = 0.7) +
+  geom_text(aes(label = paste0(round(pct), "%")),
+            position = position_dodge(0.8), vjust = -0.4, size = 3) +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Depression Frequency by Gender",
+       subtitle = "Do women report more work-related depression?",
+       x = "Frequency (low to high)", y = "%") +
+  theme_survey +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_4c_depression_by_gender")
+
+# --- 3.4c interaction: by income tier ----------------------------------------
+d <- df_bin %>%
+  filter(!is.na(emo_depressed_rec2), !is.na(income_tier)) %>%
+  group_by(gender, income_tier) %>%
+  summarise(pct = mean(emo_depressed_rec2 >= 3, na.rm = TRUE) * 100,
+            n = n(), .groups = "drop")
+
+p <- plot_grouped_bar(d, "income_tier", "pct",
+                      title = "Depression by Gender x Income",
+                      xlab = "Income Tier", ylab = "% Frequent/Always Depressed")
+save_plot(p, "3_4c_depression_gender_x_income")
+
+# --- 3.4c interaction: by age ------------------------------------------------
+d <- df_bin %>%
+  filter(!is.na(emo_depressed_rec2), !is.na(generation)) %>%
+  group_by(gender, generation) %>%
+  summarise(pct = mean(emo_depressed_rec2 >= 3, na.rm = TRUE) * 100,
+            n = n(), .groups = "drop")
+
+p <- ggplot(d, aes(x = generation, y = pct, color = gender, group = gender)) +
+  geom_line(linewidth = 1) + geom_point(size = 3) +
+  geom_text(aes(label = paste0(round(pct), "%")), vjust = -1, size = 3.2) +
+  scale_color_manual(values = pal_gender) +
+  labs(title = "Depression by Gender x Age",
+       x = "Age Group", y = "% Frequent/Always Depressed") +
+  theme_survey +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.15)))
+save_plot(p, "3_4c_depression_gender_x_age")
+
+cat("  Task 17 complete: saved to figures/\n")
+
+# ==============================================================================
+# TASK 18: DIVERSITY & INCLUSION (Section 3.5)
+# ==============================================================================
+cat("\n--- Task 18: Diversity & Inclusion ---\n")
+
+# --- 3.5a: Satisfaction with diversity policies by gender -------------------
+d <- df_bin %>%
+  filter(!is.na(satis_dei_rec2)) %>%
+  group_by(gender) %>%
+  summarise(pct = mean(satis_dei_rec2 == 3) * 100, n = n(), .groups = "drop")
+
+p <- ggplot(d, aes(x = gender, y = pct, fill = gender)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = paste0(round(pct), "%")), vjust = -0.4, size = 4) +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Satisfaction with Diversity & Inclusion Policies",
+       subtitle = "% satisfied with D&I policies in their organization",
+       x = "", y = "% Satisfied") +
+  theme_survey + guides(fill = "none") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_5a_dei_satis_by_gender")
+
+# --- 3.5a interaction: by org size -------------------------------------------
+d <- df_bin %>%
+  filter(!is.na(satis_dei_rec2), !is.na(org_size_f)) %>%
+  group_by(gender, org_size_f) %>%
+  summarise(pct = mean(satis_dei_rec2 == 3) * 100, n = n(), .groups = "drop")
+
+p <- plot_grouped_bar(d, "org_size_f", "pct",
+                      title = "DEI Satisfaction by Gender x Org Size",
+                      xlab = "Organization Size", ylab = "% Satisfied")
+save_plot(p, "3_5a_dei_satis_gender_x_orgsize")
+
+# --- 3.5a interaction: by role -----------------------------------------------
+d <- df_bin %>%
+  filter(!is.na(satis_dei_rec2), !is.na(role_label)) %>%
+  group_by(gender, role_label) %>%
+  summarise(pct = mean(satis_dei_rec2 == 3) * 100, n = n(), .groups = "drop") %>%
+  filter(!is.na(role_label))
+
+p <- ggplot(d, aes(x = role_label, y = pct, fill = gender)) +
+  geom_col(position = position_dodge(0.8), width = 0.7) +
+  geom_text(aes(label = paste0(round(pct), "%")),
+            position = position_dodge(0.8), hjust = -0.2, size = 3) +
+  coord_flip() +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "DEI Satisfaction by Gender x Role",
+       x = "", y = "% Satisfied") +
+  theme_survey +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2)))
+save_plot(p, "3_5a_dei_satis_gender_x_role", w = 9, h = 5.5)
+
+# --- 3.5a interaction: by income tier ----------------------------------------
+d <- df_bin %>%
+  filter(!is.na(satis_dei_rec2), !is.na(income_tier)) %>%
+  group_by(gender, income_tier) %>%
+  summarise(pct = mean(satis_dei_rec2 == 3) * 100, n = n(), .groups = "drop")
+
+p <- plot_grouped_bar(d, "income_tier", "pct",
+                      title = "DEI Satisfaction by Gender x Income",
+                      xlab = "Income Tier", ylab = "% Satisfied")
+save_plot(p, "3_5a_dei_satis_gender_x_income")
+
+cat("  Task 18 complete: saved to figures/\n")
+
+# ==============================================================================
+# TASK 19: SELF-EMPLOYMENT COMPARISONS (Section 3.6)
+# ==============================================================================
+cat("\n--- Task 19: Self-Employment ---\n")
+
+# Identify employees vs self-employed using non-NA patterns in ind_ columns
+df_bin <- df_bin %>%
+  mutate(emp_type = case_when(
+    !is.na(ind_burnout_freq_rec2) | !is.na(ind_emo_happy_rec2) ~ "Self-employed",
+    !is.na(burnout_freq_rec2) | !is.na(emo_happy_rec2) ~ "Employee",
+    TRUE ~ NA_character_
+  ))
+
+# --- 3.6a: Wellbeing comparison: Employee vs Self-Employed by Gender ---------
+# Use happiness and commitment as wellbeing proxies (no direct satis_ for ind)
+d_emp <- df_bin %>%
+  filter(emp_type == "Employee") %>%
+  group_by(gender) %>%
+  summarise(
+    happy = mean(emo_happy_rec2, na.rm = TRUE),
+    stressed = mean(emo_stressed_rec2, na.rm = TRUE),
+    committed = mean(emo_committed_rec2, na.rm = TRUE),
+    n = n(), .groups = "drop"
+  ) %>% mutate(type = "Employee")
+
+d_self <- df_bin %>%
+  filter(emp_type == "Self-employed") %>%
+  group_by(gender) %>%
+  summarise(
+    happy = mean(ind_emo_happy_rec2, na.rm = TRUE),
+    stressed = mean(ind_emo_stressed_rec2, na.rm = TRUE),
+    committed = mean(ind_emo_committed_rec2, na.rm = TRUE),
+    n = n(), .groups = "drop"
+  ) %>% mutate(type = "Self-employed")
+
+d_36a <- bind_rows(d_emp, d_self) %>%
+  pivot_longer(cols = c(happy, stressed, committed),
+               names_to = "emotion", values_to = "mean_val") %>%
+  mutate(group = paste0(type, " - ", gender),
+         emotion = factor(emotion, levels = c("happy", "committed", "stressed")))
+
+p <- ggplot(d_36a, aes(x = emotion, y = mean_val, fill = group)) +
+  geom_col(position = position_dodge(0.9), width = 0.7) +
+  geom_text(aes(label = round(mean_val, 1)),
+            position = position_dodge(0.9), vjust = -0.4, size = 2.8) +
+  scale_fill_manual(values = c("Employee - Femenino" = "#E84393",
+                               "Employee - Masculino" = "#0984E3",
+                               "Self-employed - Femenino" = "#FD79A8",
+                               "Self-employed - Masculino" = "#74B9FF")) +
+  labs(title = "Wellbeing: Employees vs Self-Employed by Gender",
+       subtitle = "Mean frequency (higher = more frequent)",
+       x = "", y = "Mean Frequency", fill = "") +
+  theme_survey +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_6a_wellbeing_emp_vs_self", w = 10, h = 5)
+
+# --- 3.6b: Burnout: Employees vs Self-Employed by Gender --------------------
+d_emp_bo <- df_bin %>%
+  filter(emp_type == "Employee", !is.na(burnout_freq_rec2)) %>%
+  group_by(gender) %>%
+  summarise(pct = mean(burnout_freq_rec2 >= 3, na.rm = TRUE) * 100,
+            n = n(), .groups = "drop") %>%
+  mutate(type = "Employee")
+
+d_self_bo <- df_bin %>%
+  filter(emp_type == "Self-employed", !is.na(ind_burnout_freq_rec2)) %>%
+  group_by(gender) %>%
+  summarise(pct = mean(ind_burnout_freq_rec2 >= 3, na.rm = TRUE) * 100,
+            n = n(), .groups = "drop") %>%
+  mutate(type = "Self-employed")
+
+d_bo <- bind_rows(d_emp_bo, d_self_bo) %>%
+  mutate(group = paste0(type, "\n", gender))
+
+p <- ggplot(d_bo, aes(x = type, y = pct, fill = gender)) +
+  geom_col(position = position_dodge(0.8), width = 0.7) +
+  geom_text(aes(label = paste0(round(pct), "% (n=", n, ")")),
+            position = position_dodge(0.8), vjust = -0.4, size = 3) +
+  scale_fill_manual(values = pal_gender) +
+  labs(title = "Burnout: Employees vs Self-Employed by Gender",
+       subtitle = "% frequent/always burnout",
+       x = "", y = "% Frequent/Always Burnout") +
+  theme_survey +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_6b_burnout_emp_vs_self")
+
+# --- 3.6c: Work boundary violations: Employees vs Self-Employed by Gender ---
+# Employee WLB items
+wlb_emp_vars <- c("wlb_overtime_rec2", "wlb_weekends_rec2",
+                  "wlb_vacation_work_rec2", "wlb_available_off_hrs_rec2",
+                  "wlb_think_after_work_rec2", "wlb_think_before_sleep_rec2",
+                  "wlb_interfere_personal_rec2")
+wlb_self_vars <- c("ind_wlb_overtime_rec2", "ind_wlb_weekends_rec2",
+                    "ind_wlb_vacation_work_rec2", "ind_wlb_available_off_hrs_rec2",
+                    "ind_wlb_think_after_work_rec2", "ind_wlb_think_before_sleep_rec2",
+                    "ind_wlb_interfere_personal_rec2")
+wlb_item_labels <- c("Overtime", "Weekends", "Vacation work",
+                      "After-hours avail.", "Think after work",
+                      "Think before sleep", "WL interference")
+
+d_emp_wlb <- df_bin %>%
+  filter(emp_type == "Employee") %>%
+  select(gender, all_of(wlb_emp_vars)) %>%
+  pivot_longer(-gender, names_to = "item", values_to = "value") %>%
+  filter(!is.na(value)) %>%
+  mutate(item_idx = match(item, wlb_emp_vars)) %>%
+  group_by(gender, item_idx) %>%
+  summarise(mean_freq = mean(value, na.rm = TRUE), .groups = "drop") %>%
+  mutate(type = "Employee")
+
+d_self_wlb <- df_bin %>%
+  filter(emp_type == "Self-employed") %>%
+  select(gender, all_of(wlb_self_vars)) %>%
+  pivot_longer(-gender, names_to = "item", values_to = "value") %>%
+  filter(!is.na(value)) %>%
+  mutate(item_idx = match(item, wlb_self_vars)) %>%
+  group_by(gender, item_idx) %>%
+  summarise(mean_freq = mean(value, na.rm = TRUE), .groups = "drop") %>%
+  mutate(type = "Self-employed")
+
+d_wlb <- bind_rows(d_emp_wlb, d_self_wlb) %>%
+  mutate(item_label = wlb_item_labels[item_idx],
+         item_label = factor(item_label, levels = rev(wlb_item_labels)),
+         group = paste0(type, " - ", gender))
+
+p <- ggplot(d_wlb, aes(x = item_label, y = mean_freq, fill = group)) +
+  geom_col(position = position_dodge(0.9), width = 0.7) +
+  coord_flip() +
+  scale_fill_manual(values = c("Employee - Femenino" = "#E84393",
+                               "Employee - Masculino" = "#0984E3",
+                               "Self-employed - Femenino" = "#FD79A8",
+                               "Self-employed - Masculino" = "#74B9FF")) +
+  labs(title = "Work Boundary Violations: Employees vs Self-Employed",
+       subtitle = "Mean frequency by gender x employment type",
+       x = "", y = "Mean Frequency", fill = "") +
+  theme_survey +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+save_plot(p, "3_6c_boundary_emp_vs_self", w = 11, h = 6)
+
+cat("  Task 19 complete: saved to figures/\n")
+
+# ==============================================================================
+# TASK 20: COMPREHENSIVE GENDER GAP DASHBOARDS (Section 3.7)
+# ==============================================================================
+cat("\n--- Task 20: Gender Gap Dashboards ---\n")
+
+# --- 3.7a: Gender gap heatmap across satisfaction items by income tier -------
+satis_vars_37 <- c("satis_recognition_rec2", "satis_promotion_rec2",
+                   "satis_salary_rec2", "satis_flexibility_rec2",
+                   "satis_dei_rec2", "satis_workload_rec2",
+                   "satis_general_rec2", "satis_leadership_rec2")
+satis_labels_37 <- c("Recognition", "Promotion", "Salary", "Flexibility",
+                     "DEI", "Workload", "Overall", "Supervisor")
+
+d <- df_bin %>%
+  filter(!is.na(income_tier)) %>%
+  select(gender, income_tier, all_of(satis_vars_37)) %>%
+  pivot_longer(cols = all_of(satis_vars_37),
+               names_to = "dimension", values_to = "value") %>%
+  filter(!is.na(value)) %>%
+  group_by(gender, income_tier, dimension) %>%
+  summarise(pct = mean(value == 3) * 100, .groups = "drop") %>%
+  pivot_wider(names_from = gender, values_from = pct) %>%
+  mutate(gap = Femenino - Masculino,
+         dim_label = satis_labels_37[match(dimension, satis_vars_37)])
+
+p <- ggplot(d, aes(x = income_tier, y = dim_label, fill = gap)) +
+  geom_tile(color = "white", linewidth = 1) +
+  geom_text(aes(label = paste0(round(gap, 1), "pp")), size = 3) +
+  scale_fill_gradient2(low = "#0984E3", mid = "white", high = "#E84393",
+                       midpoint = 0, name = "F-M gap (pp)") +
+  labs(title = "Gender Gap in Satisfaction by Income Tier",
+       subtitle = "Pink = women more satisfied; Blue = men more satisfied",
+       x = "Income Tier", y = "") +
+  theme_survey +
+  theme(panel.grid = element_blank())
+save_plot(p, "3_7a_satis_gap_heatmap_by_income", w = 9, h = 5.5)
+
+# Also by org size
+d2 <- df_bin %>%
+  filter(!is.na(org_size_f)) %>%
+  select(gender, org_size_f, all_of(satis_vars_37)) %>%
+  pivot_longer(cols = all_of(satis_vars_37),
+               names_to = "dimension", values_to = "value") %>%
+  filter(!is.na(value)) %>%
+  group_by(gender, org_size_f, dimension) %>%
+  summarise(pct = mean(value == 3) * 100, .groups = "drop") %>%
+  pivot_wider(names_from = gender, values_from = pct) %>%
+  mutate(gap = Femenino - Masculino,
+         dim_label = satis_labels_37[match(dimension, satis_vars_37)])
+
+p <- ggplot(d2, aes(x = org_size_f, y = dim_label, fill = gap)) +
+  geom_tile(color = "white", linewidth = 1) +
+  geom_text(aes(label = paste0(round(gap, 1), "pp")), size = 3) +
+  scale_fill_gradient2(low = "#0984E3", mid = "white", high = "#E84393",
+                       midpoint = 0, name = "F-M gap (pp)") +
+  labs(title = "Gender Gap in Satisfaction by Org Size",
+       subtitle = "Pink = women more satisfied; Blue = men more satisfied",
+       x = "Organization Size", y = "") +
+  theme_survey +
+  theme(panel.grid = element_blank())
+save_plot(p, "3_7a_satis_gap_heatmap_by_orgsize", w = 9, h = 5.5)
+
+# Also by age
+d3 <- df_bin %>%
+  filter(!is.na(generation)) %>%
+  select(gender, generation, all_of(satis_vars_37)) %>%
+  pivot_longer(cols = all_of(satis_vars_37),
+               names_to = "dimension", values_to = "value") %>%
+  filter(!is.na(value)) %>%
+  group_by(gender, generation, dimension) %>%
+  summarise(pct = mean(value == 3) * 100, .groups = "drop") %>%
+  pivot_wider(names_from = gender, values_from = pct) %>%
+  mutate(gap = Femenino - Masculino,
+         dim_label = satis_labels_37[match(dimension, satis_vars_37)])
+
+p <- ggplot(d3, aes(x = generation, y = dim_label, fill = gap)) +
+  geom_tile(color = "white", linewidth = 1) +
+  geom_text(aes(label = paste0(round(gap, 1), "pp")), size = 3) +
+  scale_fill_gradient2(low = "#0984E3", mid = "white", high = "#E84393",
+                       midpoint = 0, name = "F-M gap (pp)") +
+  labs(title = "Gender Gap in Satisfaction by Age Group",
+       subtitle = "Pink = women more satisfied; Blue = men more satisfied",
+       x = "Age Group", y = "") +
+  theme_survey +
+  theme(panel.grid = element_blank())
+save_plot(p, "3_7a_satis_gap_heatmap_by_age", w = 9, h = 5.5)
+
+# --- 3.7b: Gender gap profile by role level (multi-panel) -------------------
+# Compute gender gaps for multiple outcomes at each role level
+gap_by_role <- df_bin %>%
+  filter(!is.na(role_label)) %>%
+  group_by(gender, role_label) %>%
+  summarise(
+    raise_ask = mean(asked_raise == 1, na.rm = TRUE) * 100,
+    raise_success = mean(raise_result_rec == 1, na.rm = TRUE) * 100,
+    satis_salary = mean(satis_salary_rec2 == 3, na.rm = TRUE) * 100,
+    satis_promo = mean(satis_promotion_rec2 == 3, na.rm = TRUE) * 100,
+    burnout = mean(burnout_freq_rec2 >= 3, na.rm = TRUE) * 100,
+    turnover = mean(turnover_intent_rec2 == 1, na.rm = TRUE) * 100,
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(raise_ask, raise_success, satis_salary,
+                        satis_promo, burnout, turnover),
+               names_to = "outcome", values_to = "pct") %>%
+  pivot_wider(names_from = gender, values_from = pct) %>%
+  mutate(gap = Femenino - Masculino,
+         outcome_label = case_when(
+           outcome == "raise_ask" ~ "Raise Request Rate",
+           outcome == "raise_success" ~ "Raise Success Rate",
+           outcome == "satis_salary" ~ "Salary Satisfaction",
+           outcome == "satis_promo" ~ "Promotion Satisfaction",
+           outcome == "burnout" ~ "Frequent Burnout",
+           outcome == "turnover" ~ "Turnover Intention"
+         ))
+
+p <- ggplot(gap_by_role, aes(x = role_label, y = gap, color = outcome_label,
+                              group = outcome_label)) +
+  geom_line(linewidth = 1) + geom_point(size = 2) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  labs(title = "Gender Gap Profile by Role Level",
+       subtitle = "F-M difference (pp) — positive = women higher, negative = men higher",
+       x = "Role Level", y = "Gender Gap (pp)", color = "Outcome") +
+  theme_survey +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+save_plot(p, "3_7b_gap_profile_by_role", w = 10, h = 6)
+
+# Multi-panel version
+p <- ggplot(gap_by_role, aes(x = role_label, y = gap)) +
+  geom_col(aes(fill = gap > 0), width = 0.7) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  facet_wrap(~outcome_label, scales = "free_y") +
+  scale_fill_manual(values = c("TRUE" = "#E84393", "FALSE" = "#0984E3"),
+                    guide = "none") +
+  labs(title = "Gender Gap Profile by Role Level",
+       subtitle = "Pink = women higher; Blue = men higher",
+       x = "", y = "Gender Gap (pp)") +
+  theme_survey +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7))
+save_plot(p, "3_7b_gap_profile_panels", w = 12, h = 8)
+
+# --- 3.7c: Correlation matrix of gender gaps across outcomes ----------------
+# Compute gender gap per outcome per org-size group
+gap_matrix <- df_bin %>%
+  filter(!is.na(org_size_f)) %>%
+  group_by(gender, org_size_f) %>%
+  summarise(
+    pay_equity = mean(pay_equity_rec2 == 3, na.rm = TRUE) * 100,
+    raise_ask = mean(asked_raise == 1, na.rm = TRUE) * 100,
+    satis_salary = mean(satis_salary_rec2 == 3, na.rm = TRUE) * 100,
+    satis_promo = mean(satis_promotion_rec2 == 3, na.rm = TRUE) * 100,
+    training = mean(org_training_rec == 1, na.rm = TRUE) * 100,
+    burnout = mean(burnout_freq_rec2 >= 3, na.rm = TRUE) * 100,
+    turnover = mean(turnover_intent_rec2 == 1, na.rm = TRUE) * 100,
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(pay_equity, raise_ask, satis_salary, satis_promo,
+                        training, burnout, turnover),
+               names_to = "outcome", values_to = "pct") %>%
+  pivot_wider(names_from = gender, values_from = pct) %>%
+  mutate(gap = Femenino - Masculino) %>%
+  select(org_size_f, outcome, gap) %>%
+  pivot_wider(names_from = outcome, values_from = gap)
+
+# Compute correlation of gaps (across org-size groups + add generation groups)
+gap_by_gen <- df_bin %>%
+  filter(!is.na(generation)) %>%
+  group_by(gender, generation) %>%
+  summarise(
+    pay_equity = mean(pay_equity_rec2 == 3, na.rm = TRUE) * 100,
+    raise_ask = mean(asked_raise == 1, na.rm = TRUE) * 100,
+    satis_salary = mean(satis_salary_rec2 == 3, na.rm = TRUE) * 100,
+    satis_promo = mean(satis_promotion_rec2 == 3, na.rm = TRUE) * 100,
+    training = mean(org_training_rec == 1, na.rm = TRUE) * 100,
+    burnout = mean(burnout_freq_rec2 >= 3, na.rm = TRUE) * 100,
+    turnover = mean(turnover_intent_rec2 == 1, na.rm = TRUE) * 100,
+    .groups = "drop"
+  ) %>%
+  pivot_longer(cols = c(pay_equity, raise_ask, satis_salary, satis_promo,
+                        training, burnout, turnover),
+               names_to = "outcome", values_to = "pct") %>%
+  pivot_wider(names_from = gender, values_from = pct) %>%
+  mutate(gap = Femenino - Masculino) %>%
+  select(generation, outcome, gap) %>%
+  pivot_wider(names_from = outcome, values_from = gap)
+
+# Combine both for more observations
+gap_combined <- bind_rows(
+  gap_matrix %>% select(-org_size_f),
+  gap_by_gen %>% select(-generation)
+)
+
+cor_mat <- cor(gap_combined, use = "pairwise.complete.obs")
+
+# Plot as heatmap
+cor_long <- as.data.frame(as.table(cor_mat)) %>%
+  rename(Var1 = 1, Var2 = 2, corr = 3)
+
+outcome_names <- c("pay_equity" = "Pay Equity", "raise_ask" = "Raise Ask",
+                   "satis_salary" = "Salary Satis.", "satis_promo" = "Promo Satis.",
+                   "training" = "Training", "burnout" = "Burnout",
+                   "turnover" = "Turnover")
+cor_long$Var1 <- outcome_names[as.character(cor_long$Var1)]
+cor_long$Var2 <- outcome_names[as.character(cor_long$Var2)]
+
+p <- ggplot(cor_long, aes(x = Var1, y = Var2, fill = corr)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = round(corr, 2)), size = 3) +
+  scale_fill_gradient2(low = "#0984E3", mid = "white", high = "#E84393",
+                       midpoint = 0, limits = c(-1, 1),
+                       name = "Correlation") +
+  labs(title = "Correlation of Gender Gaps Across Outcomes",
+       subtitle = "Do firms with large wage gaps also have large training/promotion gaps?",
+       x = "", y = "") +
+  theme_survey +
+  theme(panel.grid = element_blank(),
+        axis.text.x = element_text(angle = 40, hjust = 1))
+save_plot(p, "3_7c_gap_correlation_matrix", w = 9, h = 7)
+
+cat("  Task 20 complete: saved to figures/\n")
+
+# ==============================================================================
+cat("\n=== All Tasks 01-20 complete ===\n")
 cat("Figures saved to:", normalizePath(fig_dir), "\n")
 
