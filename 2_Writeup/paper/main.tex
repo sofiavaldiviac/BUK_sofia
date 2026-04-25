@@ -1,0 +1,445 @@
+% ============================================================
+% Market Power and the Gender Career Gap
+% Draft proposal (work in progress)
+% ============================================================
+\documentclass[11pt]{article}
+
+% ---------- packages ----------
+\usepackage[english]{babel}
+%\usepackage[letterpaper]{geometry}
+\usepackage{johd}
+%\usepackage[utf8]{inputenc}
+\usepackage{graphicx} 
+\usepackage{xcolor}
+\usepackage{amsmath, mathtools, mathrsfs, mathdots}
+\usepackage{bm, amssymb, bbm}
+
+
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+
+% ============================================================
+\title{Market Power and the Gender Career Gap: \\ Evidence from Matched HR Records in Chile}
+\author{Sofia Valdivia \\ Duke University}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+% ============================================================
+% 1. MOTIVATION
+% ============================================================
+\section{Introduction}
+
+Gender gaps in the labor market have persisted despite decades of convergence in education and declining fertility. A large literature documents wage differences between men and women and connects them to human capital, occupational sorting, and the penalty associated with motherhood \citep{goldin_grand_2014, blau_gender_2017, kleven_children_2019}. But wages are only one dimension of how careers unfold. Firms also decide who gets hired and who gets promoted. These decisions shape the trajectory of a career in ways that wage analysis alone cannot capture. This paper asks whether labor market power distorts these firm-side decisions differently for men and women.
+
+Most gender gap research has documented hiring and promotion differences without analyzing how the competitive structure of the labor market shapes these firm-side decisions. Audit and correspondence studies consistently find that employers screen men and women differently at hiring \citep{bertrand_are_2004, correll_getting_2007, kline_systemic_2022}, with differential treatment often more pronounced for mothers. But these studies cannot observe the full recruitment pipeline or connect screening behavior to market structure. On promotions, women advance more slowly than men even conditional on performance, with subjective assessments and informal networks accounting for a substantial share of the gap \citep{benson_potential_2026, cullen_old_boys, cassidy_promotion_2016}. This evidence, however, comes largely from single firms and does not address how the competitive environment shapes the firm's promotion decision. Meanwhile, a separate literature on monopsony and gender has shown that labor market power depresses women's wages \citep{webber_firm-level_2016, sharma_monopsony_2023, card_bargaining_2016} and that outside options causally affect within-firm outcomes \citep{caldwell_outside_nodate}. This work has focused exclusively on wages. Whether market power also distorts hiring and promotion decisions by gender remains an open question.
+
+I connect these two literatures. The mechanism is straightforward. If women face fewer outside options than men, firms have less competitive pressure to hire them fairly or to promote them. A firm deciding whether to promote a junior employee weighs the output gain against the wage increase. But there is a third consideration: retention. Promoting a worker raises her value at the current firm, making outside offers less attractive and reducing the probability she leaves. When a male worker has many outside options, the firm faces urgency to promote in order to retain him. When a female worker has fewer outside options, the retention motive is weaker. The firm can delay her promotion at little cost, because she is unlikely to leave regardless. The result is a higher promotion bar for women, not because they are less productive, but because the firm faces less competitive pressure to advance them.
+
+At the hiring margin, the prediction is less clear-cut. Fewer outside options for women create two opposing forces. On one hand, women who are hired stay longer, making each hire more valuable and pushing the firm to lower its screening threshold. On the other hand, women with fewer alternatives continue to apply even when the bar is high, allowing the firm to be more selective. Which force dominates is an empirical question that the data can resolve.
+
+Chile provides a natural setting to study these questions. Women have surpassed men in educational attainment and the total fertility rate has fallen to 1.2, yet the gender wage gap persists at 15 to 20 percent and female labor force participation remains low at 53 percent, well below the OECD average of 65 percent \citep{oecd_employment_2024, ine_genero_2024}. While sorting and preferences likely explain part of this gap, the combination of high female education and persistently low participation suggests that firm-side frictions deserve closer scrutiny. Chile also offers policy variation that is useful for identification. Three overlapping reforms shift different parameters of the firm's problem: the 40-hour workweek law (Ley 21.561) changes the cost of long-hours jobs, the flexible work law for caregivers (Ley 21.645) shifts women's outside options, and the childcare mandate (Article 203) creates a discontinuity in the cost of employing women at a firm-size threshold.
+
+The empirical analysis draws on administrative data from BUK, an HR platform used by over 19,000 Chilean firms covering 4.7 million workers between 2022 and 2026. BUK records the full employment relationship: hiring processes with application-level data, employment contracts, monthly payroll, promotions, and separations. Crucially, it includes a recruitment module with 186,000 selection processes and 2.7 million applications, which allows me to observe the hiring pipeline from application through the firm's scoring of each candidate. Supervisor identifiers enable measurement of organizational hierarchy and promotion events. This combination of hiring and career data within the same firms is what makes it possible to study both margins of the firm's decision.
+
+%I develop an on-the-job search model in the tradition of \citet{burdett_wage_1998}, extended with a hiring screening stage and an internal promotion decision. Firms choose both a screening threshold at hiring and a promotion threshold, and gender enters through differential outside offer arrival rates. \textcolor{red}{I dont want to make such a strong argument about my model predictions. It still need a lot of work. Maybe delete for now }The model delivers a clear prediction on promotions: the gender gap in promotion rates increases with market power. On hiring, the model yields an ambiguous prediction that the data can speak to. 
+
+The contribution of this paper is to connect monopsony to career dynamics at both the hiring and promotion margins. Existing work has studied monopsony and wages, or gender and promotions, but not the intersection. By using matched employer-employee data with recruitment records, I can observe how firms with different degrees of market power make hiring and promotion decisions for men and women within the same labor markets.
+
+% ============================================================
+% Placeholder sections for subsequent tasks
+% ============================================================
+
+\section{Literature Review}
+
+This paper sits at the intersection of two literatures that have developed in parallel: monopsony and gender wages on one side, and gender gaps in career dynamics on the other. Each has made substantial progress independently, but neither addresses whether market power distorts the firm's hiring and promotion decisions by gender. I briefly review both and then describe how this paper bridges them \textcolor{red}{this still sounds too ambitious. This is a paper proposal, its not a final output. make the workng more softer.}.
+
+\paragraph{Monopsony and gender wages.}
+A growing body of work shows that labor market power depresses women's wages more than men's. \citet{webber_firm-level_2016} estimates firm-by-gender labor supply elasticities using linked employer-employee data and finds that women face greater search frictions, with the resulting monopsony wedge explaining a meaningful share of the gender wage gap. \citet{sharma_monopsony_2023} develops a structural model of monopsony with gender-specific labor supply and estimates that market power accounts for a significant portion of the gender pay gap. \citet{caldwell_outside_nodate} construct an outside options index from the cross-sectional concentration of similar workers across job types and find that differences in options explain 20 percent of the gender wage gap in Germany, driven primarily by differences in commuting costs and geographic mobility. Related work by \citet{caldwell_outside_nodate-1} shows that increases in outside options, identified through coworker networks, lead to wage growth and job-to-job mobility.
+
+On the firm side, \citet{card_bargaining_2016} decompose the gender wage gap in Portugal into sorting and bargaining components and find that women receive only 90 percent of the firm-specific pay premiums earned by men. \citet{berger_labor_2022} develop a general equilibrium model of oligopsony with differentiated jobs and estimate large welfare losses from labor market power. Together, this literature establishes that market power matters for gender wage gaps. But its focus has been exclusively on wages. Whether monopsony also distorts the firm's decisions on hiring and promotion remains unexplored.
+
+% [PLACEHOLDER: consider adding Dube et al. (2020) "Monopsony in Online Labor Markets" for evidence on
+%  market power in platform settings; Robinson (1933) for the foundational monopsony theory;
+%  Manning (2003) "Monopsony in Motion" as the standard reference for dynamic monopsony;
+%  Azar, Marinescu & Steinbaum (2022) for HHI measurement from vacancy data;
+%  Cullen & Pakzad-Hurson (2023) "Equilibrium Effects of Pay Transparency" for how wage information
+%  affects gender gaps through outside options — connects to the monopsony channel;
+%  Cullen & Perez-Truglia "The Old Boys' Club" for gender gaps in networking/access to information;
+%  Cullen "Pushing the Envelope" — VERIFY: confirm exact title, coauthors, and year]
+
+\paragraph{Gender and career dynamics.}
+A separate literature documents gender gaps in hiring and promotion without connecting them to market structure. On promotions, \citet{benson_potential_2026} show that subjective assessments of employee ``potential'' contribute to gender gaps in promotion and pay at a large U.S. retailer. Women receive lower potential ratings despite higher performance ratings, and these differences account for roughly half of the gender promotion gap. \citet{benson_promotions_2019} document the Peter Principle in promotions, showing that firms prioritize current job performance over managerial potential when making promotion decisions. \citet{cassidy_promotion_2016} extend promotion signaling theory to incorporate gender and find that women have lower promotion probabilities and greater sensitivity of promotion probability to education. These studies provide rich evidence on how promotions work within firms, but they do not address how the competitive environment outside the firm shapes the promotion decision.
+
+On hiring, \citet{bertrand_are_2004} document differential callback rates by race using a correspondence experiment, establishing that employers screen applicants differently based on perceived identity. \citet{kline_systemic_2022} scale this approach to 108 large U.S. employers and find that discrimination is concentrated among a small set of firms, with substantial between-company variation in both racial and gender contact gaps. These audit studies reveal that screening differs by group, but they cannot observe the full recruitment pipeline or link screening behavior to the firm's labor market position.
+
+% [PLACEHOLDER: consider adding Goldin (2014) "A Grand Gender Convergence" for the overarching puzzle;
+%  Kleven, Landais & Søgaard (2019) "Children and Gender Inequality" for child penalties;
+%  Blau & Kahn (2017) "The Gender Wage Gap" for the broader survey;
+%  Kunze (2008) or Booth, Francesconi & Frank (2003) for early evidence on gender promotion gaps;
+%  Giuliano, Levine & Leonard (2009) for manager demographics and hiring]
+
+\paragraph{The missing intersection.}
+These two literatures have not been connected. The monopsony literature treats wages as the outcome of interest and does not model hiring or promotion decisions. The career dynamics literature studies hiring and promotion within firms but does not account for the competitive structure of the labor market in which the firm operates. This paper fills the gap by asking whether firms with greater market power distort their hiring screening and promotion decisions by gender. The mechanism is that fewer outside options for women reduce the competitive pressure on firms to hire fairly and promote quickly, generating career gaps that are distinct from wage gaps.
+
+\paragraph{Theoretical foundations.}
+The model builds on \citet{burdett_wage_1998}, the foundational on-the-job search model where firms post wages, workers search sequentially, and equilibrium wage dispersion arises from the tension between attracting workers and extracting surplus. I extend this framework in two directions. First, I add an internal promotion decision following \citet{gibbons_theory_1999}, where firms choose a promotion threshold based on observed performance signals. Second, I add a hiring screening stage where firms choose a quality threshold for applicants. Gender enters the model through differential outside offer arrival rates, following the logic of \citet{sharma_monopsony_2023}. The retention mechanism draws on \citet{postel-vinay_equilibrium_2002}, where firms adjust within-firm decisions in response to the threat of poaching by outside employers. \citet{devaro_signaling_2012} show that promotions signal ability to the outside market, adding another channel through which market thinness affects the promotion decision.
+
+% [PLACEHOLDER: consider adding Lazear & Rosen (1981) for tournament theory as a contrast;
+%  Phelps (1972) or Arrow (1973) for statistical discrimination foundations;
+%  Lang & Lehmann (2012) for search frictions amplifying discrimination — already in bib as lang_racial_2012]
+
+For the empirical measurement of market concentration, I follow \citet{azar_labor_2022}, who construct HHI indices from vacancy-level data to measure employer concentration across labor markets. In my setting, the BUK recruitment module provides application-level data that can be used to construct analogous measures of concentration at the occupation-by-region level.
+\textcolor{red}{REVIEW WELL HOW TO DEFINE MARKET POWER. Two ways, concentration in the hiring margin and in the employment margin.}
+\textcolor{red}{Our baseline measure of market power in a labor market is the Herfindahl–Hirschman index (HHI), calculated based on the share of vacancies of all the firms that post vacancies in that market.}
+\textcolor{red}{Other way of calculating it is based on employment}
+% [PLACEHOLDER: consider adding Schubert, Stansbury & Taska (2024) or Rinz (2022) for additional
+%  evidence on local labor market concentration trends;
+%  Jarosch, Nimczik & Sorkin (2024) for granular market power in labor markets]
+
+% ============================================================
+% 2. SETTING
+% ============================================================
+\section{Setting: Chile's Labor Market}
+
+%Chile is a useful setting for studying gender and labor market power for two reasons. First, standard supply-side explanations for the gender gap are unusually weak: women outperform men in education yet face large and persistent gaps in wages and participation. This puts firm-side frictions in sharp relief. Second, a sequence of reforms during the sample period shift different parameters of the firm's problem, providing variation that can be used for identification.
+%\textcolor{red}{I dont buy this argument that supply side explanations are weak. I would not say that.}
+\paragraph{The participation and wage puzzle.} Chile's female labor force participation rate stands at roughly 53\%, well below the OECD average of 65\% and among the lowest in Latin America. Women have surpassed men in educational attainment at every level: [PLACEHOLDER: specific statistics on enrollment or graduation gaps]. The total fertility rate has fallen to 1.2, one of the lowest in the region, reducing the fertility-based explanation for non-participation. Yet the gender wage gap has remained at 15 to 20 percent in recent years [PLACEHOLDER: cite CASEN or INE source]. %, and the share of women in managerial and senior positions is [PLACEHOLDER: XX percent]. %If human capital accumulation and caregiving responsibilities have converged, the persistence of these gaps calls for an explanation rooted in how firms operate.
+\textcolor{red}{Still not clear what the puzzle is.}
+\paragraph{Policy reforms.} Three overlapping reforms during the 2022--2026 period create variation in the firm's cost and benefit structure for employing women.
+
+The first is a reduction in the standard workweek from 45 to 40 hours (Ley 21.561), phased in three steps: from 45 to 44 hours in April 2024, from 44 to 42 in April 2026, and from 42 to 40 in April 2028. One open question is whether this reform interacts with the ``greedy jobs'' channel: if men continue working overtime despite the shorter statutory week, the premium on long-hours availability could continue to favor them in promotions.
+
+The second is a flexible work law for workers with caregiving responsibilities (Ley 21.645), effective January 29th, 2024. The law grants parents and caregivers of children under 14, and children with disabilities the right to request flexible hours or remote work arrangements. To the extent that women are more likely to be primary caregivers, this reform directly impacts them. %increases their outside offer arrival rate $\lambda_F$, shifting the key parameter of the model.
+
+The third is the childcare mandate under Article 203 of the Labor Code, which requires firms to provide or fund childcare when they employ 20 or more women. Article 203 has been a popular subject of legislative debate, where successive governments have proposed reforming the threshold, but none has succeeded. \textcolor{red}{(CITE lafortune paper about bunching)} show that firms bunch at 19 female employees, just below the cutoff, suggesting the mandate actively distorts hiring decisions.
+
+%Each reform is useful in a different way. The workweek reduction and flexible work law create time-series variation in $\lambda_F$ that can be used to test whether changes in women's outside options translate into changes in the gender promotion gap. The childcare mandate threshold creates cross-sectional variation at a known cutoff, allowing a cleaner comparison of firms just above and just below the mandate.
+
+% ============================================================
+% 3. DATA
+% ============================================================
+\section{Data}
+
+The empirical analysis draws on administrative records from BUK, an HR and payroll platform used by Chilean firms. BUK records each stage of the employment relationship, from recruitment through separation, providing a matched employer-employee-applicant dataset. This section describes the platform, the data structure, and how the sample compares to the universe of Chilean firms.
+
+\subsection{Platform overview}
+
+BUK is a human resources platform that firms use to manage hiring, contracts, payroll, and employee records. The platform is not sector-specific: it serves firms across all 20 ISIC sections represented in Chile's SII (Servicio de Impuestos Internos) tax records. Adoption is voluntary, meaning the sample consists of firms that chose to use BUK for their HR operations. \textcolor{red}{Maybe point to selection plot that pedro made}
+
+The panel covers the period 2022 to 2026. During this window, the number of firms on the platform grew from approximately 6,500 to over 19,000, reflecting rapid adoption rather than firm entry or exit from the economy. I restrict the analysis to Chilean firms, which account for 19,338 of the 29,401 firms in the full multi-country database.
+
+\subsection{Data structure}
+
+BUK records the full employment pipeline within each firm:
+
+\begin{enumerate}
+\item \textbf{Hiring.} The recruitment module tracks selection processes from vacancy creation through hiring \textcolor{red}{(dont have hiring outcome yet, ideally will have it)}. Each process records the functional area, salary range offered, and reason for the vacancy (new position, replacement, or temporary). Applications are linked to candidates, with information on demographics, referral source, and application score.
+
+\item \textbf{Contracts.} The job table records each employment spell with start and end dates, job title, area, contract type, workday type, and regular hours. Each spell is linked to a firm, a worker, and a supervisor via a \texttt{boss\_id} field, which enables measurement of organizational hierarchy.
+
+\item \textbf{Payroll.} Monthly salary records include base, gross, and net salary, as well as taxable and non-taxable earnings. This allows decomposition of compensation into fixed and variable components. \textcolor{red}{say that we also have the adm\_assign dataset for bonuses and extra payment assignments. which tracks performance bonus, tenure bonus, comission, holiday}
+
+\item \textbf{Promotions.} Promotion events are identified through changes in job title, role, or area within the same firm \textcolor{red}{(look for reference task\_issue2\_03.md, here we define our preliminary definition of promotion.)}%, and through transitions in the \texttt{boss\_id} field (becoming a supervisor).
+
+\item \textbf{Separations.} Spell end dates are observed for 83.2 percent of completed spells \textcolor{red}{(say theres info on exit reason as well, even if theres low coverage)}. %Exit reason coverage is low and will need to be supplemented with inferred voluntary/involuntary classification based on spell patterns.
+\end{enumerate}
+
+The core unit of analysis is a worker-month panel. Each worker is identified across spells within and across firms, allowing measurement of job-to-job transitions, tenure, and career trajectories.
+
+\subsection{Firms}
+
+Table~\ref{tab:firms} summarizes the firm sample. The distribution is skewed toward large employers: firms with more than 250 employees account for 28.5 percent of firms but 79.8 percent of workers. This reflects BUK's market position as a platform for mid-to-large enterprises and is an important source of selection discussed below.
+
+\begin{table}[h]
+\centering
+\caption{Firm size distribution (Chile)}
+\label{tab:firms}
+\begin{tabular}{lrr}
+\hline
+ & N firms (\%) & \% of workers \\
+\hline
+Large ($>$250 employees) & 5,459 (28.4\%) & 79.8\% \\
+Medium (50--250)         & 6,127 (31.9\%) & 14.5\% \\
+Small ($<$50)            & 7,612 (39.6\%) &  5.7\% \\
+\hline
+Total                    & 19,358         & 100\%  \\
+\hline
+\end{tabular}
+\end{table}
+
+Firms are linkable to SII tax records via the company RUT for 87 percent of the sample, providing sector classification (1-digit ISIC), sales bracket, and equity range. The top five sectors by firm count are wholesale and retail trade (17.6\%), professional and technical services (10.1\%), administrative and support services (8.7\%), finance and insurance (7.8\%), and manufacturing (6.9\%). All 20 SII economic sectors are represented.
+
+\subsection{Workers and jobs}
+
+Table~\ref{tab:workers} summarizes the worker sample. The panel contains 4.7 million unique workers observed across 8.3 million job spells. The gender split is 62.8 percent male and 37.2 percent female.
+
+\begin{table}[h]
+\centering
+\caption{Worker and job spell summary (Chile)}
+\label{tab:workers}
+\begin{tabular}{lr}
+\hline
+Unique workers           & 4,712,667 \\
+Job spells               & 8,273,604 \\
+Male / Female            & 62.8\% / 37.2\% \\
+\hline
+\textit{Job spells per worker} & \\
+\quad Mean               & 5.86 \\
+\quad Median             & 3.00 \\
+\quad P10                & 1.00 \\
+\quad P90                & 14.00 \\
+\hline
+\end{tabular}
+\end{table}
+
+Key variables at the worker-job level include wages (base, gross, and net salary), job title and area (both raw and standardized), contract type (fixed-term, indefinite), workday type (full-time, part-time, Article 22 exempt), and a supervisor identifier (\texttt{boss\_id}) that enables measurement of organizational hierarchy and promotion events.
+
+[PLACEHOLDER: report share of Chilean employees that appear in the job table. Need to check how many unique \texttt{employee\_id} from \texttt{core\_rsch\_employee} (Chile) match to \texttt{adm\_job} (Chile). The global match rate is 30.5\%, but this includes all countries and may understate Chilean coverage.]
+
+\subsection{Recruitment}
+
+Table~\ref{tab:recruit} summarizes the recruitment module, which is a distinctive feature of this dataset. It records the application pipeline, allowing direct measurement of screening intensity by gender \textcolor{red}{(kinda use for proxy the score they give each candidate.)}.
+
+\begin{table}[h]
+\centering
+\caption{Recruitment summary (Chile)}
+\label{tab:recruit}
+\begin{tabular}{lr}
+\hline
+Selection processes       & 186,457 \\
+Applications              & 2,725,982 \\
+Unique candidates         & 839,664 \\
+\hline
+\textit{Applications per vacancy} & \\
+\quad Median              & 2 \\
+\quad Mean                & 18.7 \\
+\quad P90                 & 42 \\
+\hline
+Candidate gender: Male / Female & 56.0\% / 43.0\% \\
+\hline
+\end{tabular}
+\end{table}
+
+Among completed processes, 68.9 percent result in a hire \textcolor{red}{(where is this coming from?)}. Roughly half (48.3\%) are replacements for existing positions and 38.8 percent are new vacancies. The top referral sources are external job portals (40.5\%), the company's own portal (23.7\%), and job boards such as Trabajando.cl (14.7\%). The distribution of applicants per vacancy has a heavy right tail, with some vacancies attracting over 1,000 applicants.
+
+Candidate gender is observed for 61.4 percent of candidates (the remainder have missing gender in the candidate record). Among those with gender recorded, 56.0 percent are male and 43.0 percent are female. %[PLACEHOLDER: check whether candidate gender missingness is correlated with firm size, sector, or vacancy type.]
+
+Recruitment processes are concentrated among large firms: 89.0 percent of Chilean selection processes come from firms with more than 250 employees. This is consistent with the overall size skew of the platform and implies that the hiring analysis will primarily reflect large-firm behavior.
+
+\subsection{Sample selection}
+\label{sec:selection}
+
+BUK is not a random sample of Chilean firms. Adoption is voluntary, and the platform is marketed primarily to mid-to-large employers. This section documents the main dimensions of selection and their implications for the analysis.
+
+\paragraph{Firm size.} The most important source of selection is firm size. Table~\ref{tab:selection_size} compares the BUK sample to the SII universe of formal Chilean firms.
+
+\begin{table}[h]
+\centering
+\caption{BUK vs.\ SII universe: firm size (2023)}
+\label{tab:selection_size}
+\begin{tabular}{lrrrr}
+\hline
+ & \multicolumn{2}{c}{Firms (\%)} & \multicolumn{2}{c}{Workers (\%)} \\
+Size & BUK & SII & BUK & SII \\
+\hline
+Micro/Small  & 39.6 & 95.3 & 5.7  & 29.9 \\
+Medium       & 31.9 &  3.2 & 14.5 & 16.5 \\
+Large        & 28.5 &  1.5 & 79.8 & 53.6 \\
+\hline
+\end{tabular}
+\end{table}
+
+Micro and small firms are severely under-represented in BUK relative to the SII universe. However, because large firms employ a disproportionate share of the formal workforce, the BUK sample covers a substantial fraction of total formal employment. The under-representation of small firms is a limitation for studying monopsony in thin local labor markets where small employers may be the only option. It is less of a concern for the analysis of large-firm behavior, where the model's predictions on hiring screening and promotion thresholds are most directly testable.
+
+\paragraph{Sector composition.} Table~\ref{tab:selection_sector} compares the sectoral distribution of BUK workers to the SII universe.
+
+\begin{table}[h]
+\centering
+\caption{BUK vs.\ SII universe: sector composition of workers (2023)}
+\label{tab:selection_sector}
+\begin{tabular}{lrrr}
+\hline
+Sector & BUK (\%) & SII (\%) & Direction \\
+\hline
+Admin.\ services       & 12.8 & [PLACEHOLDER]  & \\
+Wholesale \& retail    & 12.6 & 13.9 & $\approx$ \\
+Construction           & 10.5 & 11.7 & $\approx$ \\
+Education              &  9.8 &  6.9 & $\uparrow$ over \\
+Real estate            &  8.2 &  1.6 & $\uparrow$ over \\
+Agriculture            &  8.3 & [PLACEHOLDER]  & \\
+Finance \& insurance   &  5.0 &  2.3 & $\uparrow$ over \\
+Manufacturing          &  4.4 &  8.0 & $\downarrow$ under \\
+Public administration  &  0.5 &  6.8 & $\downarrow$ under \\
+\hline
+\end{tabular}
+\end{table}
+
+Public administration is structurally absent from BUK because public-sector employers do not use the platform. Manufacturing is under-represented. Real estate, education, and finance are over-represented relative to their share in the SII universe. Wholesale and retail trade and construction are roughly in line with the economy-wide distribution.
+
+\paragraph{Platform growth.} The number of firms in BUK grew from approximately 6,500 in 2022 to over 19,000 in 2026. Average monthly employees per firm declined from 257 in 2022 to 166 in 2026, consistent with the platform expanding into smaller firms over time. This growth creates a potential concern about cohort effects: early adopters may differ systematically from later ones. I address this by conditioning on firm fixed effects and by testing whether results are robust to restricting the sample to firms observed for the full panel window.
+
+\paragraph{Implications for the analysis.} The over-representation of large firms is, in some respects, an advantage for this paper. The model's predictions about how market power distorts hiring and promotion are most relevant for firms large enough to have structured hiring pipelines and internal promotion ladders. Small firms with fewer than 50 employees rarely have formal recruitment processes or hierarchical job levels. The main limitation is that the sample does not capture labor markets where small employers dominate and where monopsony power may operate through different channels (e.g., geographic isolation rather than occupational concentration).
+
+[PLACEHOLDER: additional selection checks to consider:
+\begin{itemize}
+\item Compare gender composition of BUK workers (62.8\% M / 37.2\% F) to INE formal employment gender split
+\item Compare BUK wage distribution to CASEN or INE earnings data
+\item Check whether BUK sector shares converge toward SII shares over time as the platform grows
+\item Compare occupation distribution (once \texttt{standard\_role\_name} is confirmed populated) against INE encuesta de empleo
+\item Assess geographic coverage: BUK firm distribution across regions vs.\ SII regional distribution
+\end{itemize}]
+
+\subsection{Work in Progress survey}
+
+The administrative data is complemented by the Work in Progress (WiP) survey, an annual survey administered by BUK to workers across Latin America. The 2026 wave collected responses from 6,789 individuals currently employed in Chile, Colombia, Mexico, and Peru. I focus on the Chilean subsample, which contains [PLACEHOLDER: N Chile respondents] respondents.
+
+\paragraph{Design and limitations.} The WiP survey is an open survey: anyone can respond, regardless of whether they work at a firm that uses BUK. Respondents are not identifiable, and the survey cannot be linked to the administrative platform data. There is no worker ID, firm ID, or any other variable that would allow matching a survey response to a payroll record. This means the survey and the administrative data must be analyzed separately. The open design also raises selection concerns: respondents are likely workers who are aware of BUK (through their employer or through social media) and who chose to participate, which may skew the sample toward more engaged or digitally connected workers.
+
+\paragraph{Survey content.} The survey covers more than 70 questions organized into the following modules:
+
+\begin{enumerate}
+\item \textbf{Demographics and job characteristics.} Gender, age, income bracket, tenure, role in the organization (7-level hierarchy from owner to operational worker), organization size, and work schedule (full-time, part-time, shift).
+
+\item \textbf{Compensation and pay equity.} Whether the respondent has asked for a raise, the outcome of the request, reasons for denial, perceived pay competitiveness relative to market, and agreement with the statement that men and women receive the same salary for equal positions.
+
+\item \textbf{Promotions and performance.} Whether formal promotion opportunities exist, whether performance evaluations are conducted, whether evaluations are perceived as fair, and satisfaction with growth opportunities.
+
+\item \textbf{Work schedule and flexibility.} Access to remote work, degree of schedule flexibility, and work-life balance indicators including overtime frequency, weekend work, and whether work interferes with personal life.
+
+\item \textbf{Wellbeing and retention.} Frequency of burnout, emotional states at work (happy, stressed, committed, depressed, bored), and whether the respondent plans to stay, wants to leave, or is actively searching.
+
+\item \textbf{Other modules.} Benefits, training, productivity barriers, organizational trust, AI adoption, diversity and inclusion policies, and internal communication.
+\end{enumerate}
+
+\paragraph{Role in this paper.} The survey provides subjective measures that the administrative data cannot capture: whether workers perceive pay equity, how satisfied they are with promotion opportunities, and whether they intend to stay at their current employer. These variables map directly onto the model's mechanisms. For example, lower satisfaction with promotion opportunities among women in larger organizations would be consistent with the retention trade-off prediction. Higher turnover intentions among men would be consistent with gender differences in outside options. The survey evidence is suggestive, not causal, but it provides a useful complement to the administrative patterns.
+
+[PLACEHOLDER: Previous years of the WiP survey (2024, 2025) are expected to become available. The 2025 wave found that mothers were less likely to change jobs and less likely to receive a raise conditional on asking. Questions are not identical across years, so pooling will require harmonization. Prior results are documented in BUK's ``Mujeres en el Trabajo'' reports.]
+
+% ============================================================
+% 5. Reduced form evidence
+% ============================================================
+\section{Reduced Form Evidence}
+%\section{Reduced Form Evidence}
+%\label{sec:reduceform}
+% Task issue1_05
+\textcolor{red}{Include something about labor market tightness :  labor market tightness at the occupation by local labor market level as (number of vacancies)/(number of applications).}
+
+% ============================================================
+% 6. MODEL
+% ============================================================
+\section{Model}
+
+This section develops an on-the-job search model with hiring screening and internal promotion decisions. The model builds on \citet{burdett_wage_1998}, extended with a promotion stage following \citet{gibbons_theory_1999} and gender-specific outside options following \citet{sharma_monopsony_2023}. The key ingredient is that women face lower outside offer arrival rates than men ($\lambda_F < \lambda_M$), which alters the firm's incentives at both the hiring and promotion margins. \textcolor{red}{CITE PENGPENGS PAPER OR SOMETHING ABOUT HOW WOMEN HAVE LESS OFFER ARRIVAL RATES}
+
+\subsection{Environment}
+
+Time is continuous. The economy is in steady state. There are two types of workers, $g \in \{M, F\}$, and a continuum of firms heterogeneous in productivity $p \sim F(p)$. Each firm has two job levels: junior ($j=0$) and senior ($j=1$).
+
+Output of a worker at level $j$ in a firm of productivity $p$ is
+\begin{equation*}
+    y_j(p) = p \cdot a_j, \qquad a_1 > a_0.
+\end{equation*}
+The production function is gender-neutral: a man and a woman in the same job at the same firm produce the same output. Gender enters the model entirely through the firm's optimal response to differential outside options. Any resulting career gap is therefore a market distortion, not an efficient response to productivity differences.
+
+\subsection{Workers}
+
+Workers are either unemployed or employed at level $j$ in a firm of type $p$. While employed, workers receive outside offers at rate $\lambda_g$, with the key assumption that $\lambda_F < \lambda_M$: women face thinner labor markets and fewer outside options. Workers separate exogenously at rate $\delta$, and accept any offer that improves their lifetime value.
+
+The value of unemployment is
+\begin{equation*}
+    rU_g = b + \lambda_g^u \int \max\bigl\{V_{g0}(p') - U_g,\; 0\bigr\} \, dF(p'),
+\end{equation*}
+where $b$ is the flow value of unemployment and $\lambda_g^u$ is the offer arrival rate for unemployed workers.
+
+The value of employment at level $j$ in a firm of type $p$ is
+\begin{equation*}
+    rV_{gj}(p) = w_{gj}(p) + \lambda_g \int \max\bigl\{V_{g0}(p') - V_{gj}(p),\; 0\bigr\} \, dF(p') + \delta\bigl[U_g - V_{gj}(p)\bigr] + \mathbbm{1}_{j=0} \cdot \mu_g(p)\bigl[V_{g1}(p) - V_{g0}(p)\bigr],
+\end{equation*}
+where $\mu_g(p)$ is the promotion rate at firm $p$ for gender $g$, determined by the firm's choice. The last term captures the option value of promotion for junior workers: employment at a firm with a high promotion rate is more valuable, all else equal.
+
+Since $V_{gj}(p)$ is increasing in $p$, there exists a reservation firm type $\underline{p}_g$ such that $V_{g0}(\underline{p}_g) = U_g$. Workers accept any firm with $p \geq \underline{p}_g$ and move to any outside firm that offers strictly higher lifetime value than their current match.
+
+\subsection{Firms}
+
+Each firm with productivity $p$ chooses four objects for each gender $g$: an entry wage $w_{g0}$, a senior wage $w_{g1}$, a screening threshold $q_g^*$, and a promotion threshold $\theta_g$. These choices determine profits through three flows.
+
+\paragraph{Decision 1: Hiring.} The firm posts an entry wage and a screening threshold. Applicants draw a quality signal $q \sim H(q)$ and are hired if $q \geq q_g^*$. The hiring flow into the firm is
+\begin{equation*}
+    h_g(p) = \lambda_g^u \cdot u_g \cdot \bigl[1 - H(q_g^*)\bigr] \cdot \mathbbm{1}\bigl\{V_{g0}(p) \geq U_g\bigr\},
+\end{equation*}
+where $u_g$ is the mass of unemployed gender-$g$ workers. A higher screening threshold $q_g^*$ raises average hire quality but reduces the hiring flow.
+
+\paragraph{Decision 2: Promotion.} Each period, a junior worker draws a performance signal $s \sim G(s)$. The firm promotes if $s \geq \theta_g$, yielding a promotion rate of
+\begin{equation*}
+    \mu_g(p) = 1 - G(\theta_g).
+\end{equation*}
+A lower promotion threshold means more frequent promotions, higher output from the senior level, but a larger wage bill.
+
+\paragraph{Separations.} Workers leave at rate
+\begin{equation*}
+    s_g(p) = \delta + \lambda_g \cdot \bigl[1 - F_g\bigl(V_{gj}(p)\bigr)\bigr],
+\end{equation*}
+where $F_g(V_{gj}(p))$ is the fraction of outside offers worse than the worker's current value. Women, facing lower $\lambda_F$, separate less at any given firm. This is the monopsony channel: lower outside options reduce turnover, giving firms more surplus to extract.
+
+\paragraph{Steady-state workforce.} Setting the time derivatives of the workforce to zero gives the steady-state stocks:
+\begin{align*}
+    n_{g0}(p) &= \frac{h_g(p)}{\mu_g(p) + s_g(p)}, \\[4pt]
+    n_{g1}(p) &= \frac{\mu_g(p) \cdot n_{g0}(p)}{s_g(p)} = \frac{\mu_g(p) \cdot h_g(p)}{s_g(p) \cdot \bigl[\mu_g(p) + s_g(p)\bigr]}.
+\end{align*}
+Juniors flow in through hiring and flow out through promotion or separation. Seniors flow in from promotion and flow out through separation only.
+
+\paragraph{Profit maximization.} The firm chooses $(w_{g0}, w_{g1}, q_g^*, \theta_g)$ to maximize steady-state flow profits:
+\begin{equation*}
+    \pi_g(p) = \bigl[p \cdot a_0 - w_{g0}\bigr] \cdot n_{g0}(p) + \bigl[p \cdot a_1 - w_{g1}\bigr] \cdot n_{g1}(p).
+\end{equation*}
+The four instruments affect profits through the three flows: entry wages and screening thresholds determine hiring; promotion thresholds determine internal mobility; and all four instruments shape separation through their effect on workers' continuation values.
+
+\subsection{The promotion mechanism}
+
+The firm's promotion decision balances two forces. First, a \textit{direct profit effect}: promoting a worker raises output ($a_1 > a_0$) but also raises the wage ($w_{g1} > w_{g0}$). The output gain is gender-neutral, since the production function does not depend on gender.
+
+Second, a \textit{retention effect}: promoting a worker raises her continuation value ($V_{g1} > V_{g0}$), making fewer outside offers attractive and reducing the probability she leaves. This benefit depends directly on $\lambda_g$. When a male worker has many outside options (high $\lambda_M$), the expected loss from not promoting is large --- he is likely to receive a better outside offer and leave. When a female worker has fewer outside options (low $\lambda_F$), the expected loss from not promoting is small --- she is unlikely to leave regardless.
+
+The retention value of promoting is proportional to $\lambda_g$: the difference in retention probabilities between promoted and non-promoted workers equals $\lambda_g \bigl[F_g(V_{g1}) - F_g(V_{g0})\bigr]$. As $\lambda_g \to 0$, the retention motive vanishes and the firm promotes only when the direct profit effect is positive. As $\lambda_g$ grows large, retention dominates and the firm promotes aggressively to prevent turnover. Since $\lambda_F < \lambda_M$, the retention motive is weaker for women, and the firm optimally sets a higher promotion bar: $\theta_F^* > \theta_M^*$.
+
+This result does not require any gender difference in productivity, preferences, or effort. It arises purely from the firm's rational response to differential outside options. Firms under-promote women not because women are less capable, but because women are less likely to leave.
+
+[PLACEHOLDER: connect to reduced form evidence. The prediction that promotion gaps widen with market power maps to the descriptive finding that gender differences in promotion rates are larger in more concentrated occupation $\times$ region cells (Section~\ref{sec:reduceform}, Fact~X). The prediction that women face lower separation rates maps to Fact~X on gender differences in job-to-job transitions.]
+
+\subsection{The hiring mechanism}
+
+Unlike the promotion result, the model does not deliver a clear prediction on the hiring margin. When $\lambda_F < \lambda_M$, two opposing forces shape the firm's optimal screening threshold $q_g^*$.
+
+The first is a \textit{longer tenure force}. Women who are hired stay longer at the firm, so each hire generates surplus over more periods. The expected value of a marginal hire is higher, pushing the firm to lower its screening threshold and hire more women.
+
+The second is a \textit{less competition force}. Women have fewer outside options, so they continue to apply even when the screening bar is high. The firm can raise $q_F^*$ without losing its applicant pool, allowing it to cherry-pick from a group with weak alternatives.
+
+Which force dominates is theoretically ambiguous and depends on the distribution of outside options, the screening technology, and the relative magnitudes of the tenure and applicant pool effects. This ambiguity is itself a contribution: the data can resolve what theory alone cannot. Application-to-hire conversion rates by gender across labor markets with different levels of concentration provide a direct test of which force prevails.
+
+[PLACEHOLDER: connect to reduced form evidence on hiring screening. The application-to-hire conversion rates by gender and HHI tercile (Section~\ref{sec:reduceform}, Fact~X) speak directly to which force dominates.]
+
+\subsection{Predictions}
+
+The model generates the following testable predictions:
+
+\begin{enumerate}
+    \item \textbf{Promotion gap increases with market power.} Firms in more concentrated labor markets, where $\lambda_F$ is lower relative to $\lambda_M$, set a higher relative promotion bar for women. The gender gap in promotion rates is larger in markets with greater employer concentration.
+
+    \item \textbf{Hiring screening varies with concentration.} The sign of the gender gap in screening ($q_F^* - q_M^*$) is an empirical question. The model predicts that the gap varies with market structure, and the direction can be identified from application-to-hire conversion rates across markets.
+
+    \item \textbf{Reinforcing cycle.} Lower outside options for women lead to fewer promotions, which lead to lower wage growth, which reduce the attractiveness of outside offers, further depressing $\lambda_F$. Monopsony and career stagnation compound over time.
+\end{enumerate}
+
+[PLACEHOLDER: connect each prediction to the numbered stylized facts from Section~\ref{sec:reduceform}.]
+
+% ============================================================
+% REFERENCES
+% ============================================================
+\newpage
+\bibliographystyle{aer}
+\bibliography{bib}
+
+
+\end{document}

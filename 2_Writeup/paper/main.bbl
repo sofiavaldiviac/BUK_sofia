@@ -1,0 +1,81 @@
+\ifx\undefined\bysame
+\newcommand{\bysame}{\leavevmode\hbox to\leftmargin{\hrulefill\,\,}}
+\fi
+\begin{thebibliography}{xx}
+
+\harvarditem[Azar et al.]{Azar, Marinescu and Steinbaum}{2022}{azar_labor_2022}
+{\bf Azar, José, Ioana Marinescu, and Marshall Steinbaum}, ``Labor Market Concentration,'' {\it Journal of Human Resources}, 2022, {\it 57} (S), S167--S199.
+
+\harvarditem[Benson et al.]{Benson, Li and Shue}{2019}{benson_promotions_2019}
+{\bf Benson, Alan, Danielle Li, and Kelly Shue}, ``Promotions and the {Peter} {Principle}*,'' {\it The Quarterly Journal of Economics}, November 2019, {\it 134} (4), 2085--2134.
+
+\harvarditem[Benson et al.]{Benson, Li and Shue}{2026}{benson_potential_2026}
+{\bf \bysame{}, \bysame{}, and \bysame{}}, ``“{Potential}” and the {Gender} {Promotion} {Gap},'' {\it American Economic Review}, February 2026, {\it 116} (2), 375--417.
+
+\harvarditem[Berger et al.]{Berger, Herkenhoff and Mongey}{2022}{berger_labor_2022}
+{\bf Berger, David, Kyle Herkenhoff, and Simon Mongey}, ``Labor {Market} {Power},'' {\it American Economic Review}, April 2022, {\it 112} (4), 1147--1193.
+
+\harvarditem[Bertrand and Mullainathan]{Bertrand and Mullainathan}{2004}{bertrand_are_2004}
+{\bf Bertrand, Marianne and Sendhil Mullainathan}, ``Are {Emily} and {Greg} {More} {Employable} {Than} {Lakisha} and {Jamal}? {A} {Field} {Experiment} on {Labor} {Market} {Discrimination},'' {\it American Economic Review}, September 2004, {\it 94} (4), 991--1013.
+
+\harvarditem[Blau and Kahn]{Blau and Kahn}{2017}{blau_gender_2017}
+{\bf Blau, Francine~D. and Lawrence~M. Kahn}, ``The Gender Wage Gap: Extent, Trends, and Explanations,'' {\it Journal of Economic Literature}, 2017, {\it 55} (3), 789--865.
+
+\harvarditem[Burdett and Mortensen]{Burdett and Mortensen}{1998}{burdett_wage_1998}
+{\bf Burdett, Kenneth and Dale~T. Mortensen}, ``Wage {Differentials}, {Employer} {Size}, and {Unemployment},'' {\it International Economic Review}, 1998, {\it 39} (2), 257--273.
+
+\harvarditem[Caldwell and Harmon]{Caldwell and Harmon}{n.d.}{caldwell_outside_nodate-1}
+{\bf Caldwell, Sydnee and Nikolaj Harmon}, ``Outside {Options}, {Bargaining}, and {Wages}: {Evidence} from {Coworker} {Networks}.''
+
+\harvarditem[Caldwell and Danieli]{Caldwell and Danieli}{n.d.}{caldwell_outside_nodate}
+{\bf \bysame{} and Oren Danieli}, ``Outside {Options} in the {Labor} {Market}.''
+
+\harvarditem[Card et al.]{Card, Cardoso and Kline}{2016}{card_bargaining_2016}
+{\bf Card, David, Ana~Rute Cardoso, and Patrick Kline}, ``Bargaining, {Sorting}, and the {Gender} {Wage} {Gap}: {Quantifying} the {Impact} of {Firms} on the {Relative} {Pay} of {Women} *,'' {\it The Quarterly Journal of Economics}, May 2016, {\it 131} (2), 633--686.
+
+\harvarditem[Cassidy et al.]{Cassidy, DeVaro and Kauhanen}{2016}{cassidy_promotion_2016}
+{\bf Cassidy, Hugh, Jed DeVaro, and Antti Kauhanen}, ``Promotion signaling, gender, and turnover: {New} theory and evidence,'' {\it Journal of Economic Behavior \& Organization}, June 2016, {\it 126}, 140--166.
+
+\harvarditem[Correll et al.]{Correll, Benard and Paik}{2007}{correll_getting_2007}
+{\bf Correll, Shelley~J., Stephen Benard, and In~Paik}, ``Getting a Job: Is There a Motherhood Penalty?,'' {\it American Journal of Sociology}, 2007, {\it 112} (5), 1297--1339.
+
+\harvarditem[Cullen and Perez-Truglia]{Cullen and Perez-Truglia}{2023}{cullen_old_boys}
+{\bf Cullen, Zoë and Ricardo Perez-Truglia}, ``The Old Boys' Club: Schmoozing and the Gender Gap,'' {\it American Economic Review}, 2023.
+\newblock [PLACEHOLDER: verify year, volume, pages — may be 2022 or 2023].
+
+\harvarditem[DeVaro and Waldman]{DeVaro and Waldman}{2012}{devaro_signaling_2012}
+{\bf DeVaro, Jed and Michael Waldman}, ``The Signaling Role of Promotions: Further Theory and Empirical Evidence,'' {\it Journal of Economics \& Management Strategy}, 2012, {\it 30} (5).
+\newblock [PLACEHOLDER: verify journal — may be RAND Journal of Economics instead].
+
+\harvarditem[Gibbons and Waldman]{Gibbons and Waldman}{1999}{gibbons_theory_1999}
+{\bf Gibbons, Robert and Michael Waldman}, ``A Theory of Wage and Promotion Dynamics Inside Firms,'' {\it The Quarterly Journal of Economics}, 1999, {\it 114} (4), 1321--1358.
+
+\harvarditem[Goldin]{Goldin}{2014}{goldin_grand_2014}
+{\bf Goldin, Claudia}, ``A Grand Gender Convergence: Its Last Chapter,'' {\it American Economic Review}, 2014, {\it 104} (4), 1091--1119.
+
+\harvarditem[{Instituto Nacional de Estadísticas}]{{Instituto Nacional de Estadísticas}}{2024}{ine_genero_2024}
+{\bf {Instituto Nacional de Estadísticas}}, ``Estadísticas de Género,'' 2024.
+\newblock [PLACEHOLDER: verify exact report — may be Encuesta Nacional de Empleo or Boletín de Género].
+
+\harvarditem[Kleven et al.]{Kleven, Landais and Søgaard}{2019}{kleven_children_2019}
+{\bf Kleven, Henrik, Camille Landais, and Jakob~Egholt Søgaard}, ``Children and Gender Inequality: Evidence from {Denmark},'' {\it American Economic Journal: Applied Economics}, 2019, {\it 11} (1), 181--209.
+
+\harvarditem[Kline et al.]{Kline, Rose and Walters}{2022}{kline_systemic_2022}
+{\bf Kline, Patrick, Evan~K Rose, and Christopher~R Walters}, ``Systemic {Discrimination} {Among} {Large} {U}.{S}. {Employers},'' {\it The Quarterly Journal of Economics}, September 2022, {\it 137} (4), 1963--2036.
+
+\harvarditem[{OECD}]{{OECD}}{2024}{oecd_employment_2024}
+{\bf {OECD}}, ``{OECD} Employment Outlook 2024,'' 2024.
+\newblock [PLACEHOLDER: verify exact report title and year for female LFPR statistics].
+
+\harvarditem[Postel-Vinay and Robin]{Postel-Vinay and Robin}{2002}{postel-vinay_equilibrium_2002}
+{\bf Postel-Vinay, Fabien and Jean-Marc Robin}, ``Equilibrium {Wage} {Dispersion} with {Worker} and {Employer} {Heterogeneity},'' {\it Econometrica}, 2002, {\it 70} (6), 2295--2350.
+
+\harvarditem[Sharma]{Sharma}{2023}{sharma_monopsony_2023}
+{\bf Sharma, Garima}, ``Monopsony and the {Gender} {Pay} {Gap},'' 2023.
+\newblock Working paper.
+
+\harvarditem[Webber]{Webber}{2016}{webber_firm-level_2016}
+{\bf Webber, Douglas~A.}, ``Firm-{Level} {Monopsony} and the {Gender} {Pay} {Gap},'' {\it Industrial Relations: A Journal of Economy and Society}, 2016, {\it 55} (2), 323--345.
+\newblock \_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/irel.12142.
+
+\end{thebibliography}

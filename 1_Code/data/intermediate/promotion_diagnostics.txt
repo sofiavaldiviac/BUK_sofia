@@ -1,0 +1,137 @@
+======================================================================
+Loading shared_adm_job.csv...
+======================================================================
+  Loaded: 11,380,589 rows
+  Chile: 8,270,321 rows
+
+--- Field coverage (all Chile jobs) ---
+  theoretical_liquid_salary     :  8,270,321 (100.0%)
+  role_id                       :  8,270,321 (100.0%)
+  role_name                     :  8,270,321 (100.0%)
+  role_name_category            :  5,738,136 ( 69.4%)
+  area_name_category            :  4,074,109 ( 49.3%)
+  boss_id                       :  8,250,630 ( 99.8%)
+
+Loading shared_core_employee.csv...
+  Loaded: 6,368,087 rows
+  is_boss populated: 6,368,087 (100.0%)
+  is_boss==True: 907,739
+  is_boss==False: 5,460,348
+
+======================================================================
+STEP 1: Building consecutive job transitions (same tenant)
+======================================================================
+  Total job rows (Chile): 8,270,321
+  Internal transitions (same tenant): 7,123,811
+  Cross-tenant transitions: 0
+
+======================================================================
+STEP 2: Computing transition signals
+======================================================================
+
+--- Signal coverage (among 7,123,811 internal transitions) ---
+  Salary increase >1%           :  2,728,429 fires ( 38.3% of all,  40.1% of valid)
+  Salary increase >5%           :    863,157 fires ( 12.1% of all,  12.7% of valid)
+  Salary increase >10%          :    406,325 fires (  5.7% of all,   6.0% of valid)
+  Salary decrease >1%           :    170,172 fires (  2.4% of all,   2.5% of valid)
+  Role ID changed               :    252,547 fires (  3.5% of all,   3.5% of valid)
+  Role name changed             :    246,221 fires (  3.5% of all,   3.5% of valid)
+  Role category changed         :     32,266 fires (  0.5% of all,   0.6% of valid)
+  Area category changed         :     32,563 fires (  0.5% of all,   0.9% of valid)
+  Boss ID changed               :    802,240 fires ( 11.3% of all,  11.3% of valid)
+
+--- Salary change at internal transitions ---
+  N with valid salary change: 6,805,952
+    count: 6,805,952.0%
+     mean: 143,803.3%
+      std: 6,333,358.6%
+      min: -100.0%
+      25%: 0.0%
+      50%: 0.1%
+      75%: 2.2%
+      max: 3,068,083,200.0%
+
+======================================================================
+STEP 3: Signal overlap matrix
+======================================================================
+
+  Co-occurrence (% of row signal that also has column signal):
+                  Sal>5%    RoleID  RoleName   RoleCat   AreaCat    BossID
+  Sal>5%          100.0%      9.8%      9.7%      1.3%      0.6%      7.9%
+  RoleID           33.5%    100.0%     97.5%     12.8%      4.3%     25.2%
+  RoleName         34.1%    100.0%    100.0%     13.1%      4.3%     25.6%
+  RoleCat          35.7%    100.0%    100.0%    100.0%     12.3%     32.6%
+  AreaCat          16.6%     33.2%     32.5%     12.2%    100.0%     30.9%
+  BossID            8.5%      7.9%      7.9%      1.3%      1.3%    100.0%
+
+======================================================================
+STEP 4: Candidate promotion definitions
+======================================================================
+  Total employee-years in transitions: 2,515,863
+
+  A: Salary >5%:
+    N events: 863,157
+    Rate per emp-year: 34.31%
+    Female: 390,419 (rate 36.15%)
+    Male:   472,738 (rate 32.93%)
+    Median salary change: 9.4%
+
+  B: Role ID change:
+    N events: 252,547
+    Rate per emp-year: 10.04%
+    Female: 106,478 (rate 9.86%)
+    Male:   146,069 (rate 10.17%)
+    Median salary change: 0.4%
+
+  C: Role ID + Sal>5%:
+    N events: 84,597
+    Rate per emp-year: 3.36%
+    Female: 35,391 (rate 3.28%)
+    Male:   49,206 (rate 3.43%)
+    Median salary change: 20.0%
+
+  D: Role category change:
+    N events: 32,266
+    Rate per emp-year: 1.28%
+    Female: 15,490 (rate 1.43%)
+    Male:   16,776 (rate 1.17%)
+    Median salary change: 0.8%
+
+  E: Area category change:
+    N events: 32,563
+    Rate per emp-year: 1.29%
+    Female: 13,598 (rate 1.26%)
+    Male:   18,965 (rate 1.32%)
+    Median salary change: 0.0%
+
+  F: Boss change + Sal>5%:
+    N events: 68,216
+    Rate per emp-year: 2.71%
+    Female: 30,588 (rate 2.83%)
+    Male:   37,628 (rate 2.62%)
+    Median salary change: 14.2%
+
+  G: Role ID + Sal>1%:
+    N events: 107,092
+    Rate per emp-year: 4.26%
+    Female: 44,902 (rate 4.16%)
+    Male:   62,190 (rate 4.33%)
+    Median salary change: 15.3%
+
+  H: Any of B,D,E + Sal>1%:
+    N events: 111,592
+    Rate per emp-year: 4.44%
+    Female: 46,696 (rate 4.32%)
+    Male:   64,896 (rate 4.52%)
+    Median salary change: 14.7%
+
+======================================================================
+STEP 5: is_boss exploration
+======================================================================
+  Employees with is_boss data: 6,368,087
+  Employees with is_boss variation (>1 unique): 0
+  (If 0, is_boss is fully static — no temporal variation)
+
+  is_boss rate by gender:
+    F: 15.7%
+    M: 13.3%
