@@ -49,12 +49,13 @@
 \usepackage{lmodern}
 \usepackage{bbm}
 \usepackage{comment}
+\usepackage{appendixnumberbeamer}
 
 % ---------- figure path shortcut ----------
 \graphicspath{{../../../1_Code/figures/}}
 
 % ============================================================
-\title{Market Power and the Gender Career Gap:\\Evidence from Matched HR Records in Chile}
+\title{Market Power and Gender Gaps in Career Dynamics:\\Evidence from Matched HR Records in Chile}
 \author{Sofia Valdivia}
 \institute{Duke University}
 \date{Field Exam --- \today}
@@ -69,7 +70,7 @@
 \begin{frame}[plain]
 \vfill
 \begin{center}
-{\Large\bfseries\textcolor{navy}{Market Power and the Gender Career Gap}}\\[6pt]
+{\Large\bfseries\textcolor{navy}{Market Power and Gender Gaps in Career Dynamics}}\\[6pt]
 {\large\textcolor{navy}{Evidence from Matched HR Records in Chile}}\\[20pt]
 {\normalsize\textcolor{navy}{Sofia Valdivia}}\\[4pt]
 {\small\textcolor{navy}{Duke University}}\\[16pt]
@@ -87,16 +88,16 @@
 \frametitle{Wages are only one dimension of how careers unfold}
 
 \begin{itemize}
-    \item Gender gaps persist despite convergence in education and declining fertility (Goldin, 2014; Blau \& Kahn, 2017). Most research focuses on \emph{wages}, but firms also decide \textbf{who gets hired} and \textbf{who gets promoted}.
+    \item Gender gaps persist despite convergence in education {\scriptsize\textcolor{muted}{(Goldin, 2014; Blau \& Kahn, 2017)}}, yet most research focuses on wages. Firms also decide \textbf{who gets hired} and \textbf{who gets promoted}.
 
     \medskip
-    \item Search frictions give firms market power over workers (Manning, 2003). Women face fewer outside options than men (Webber, 2016; Caldwell \& Danieli, 2022). \bmark{This depresses wages --- but does it also distort hiring and promotion decisions?}
+    \item Search frictions give firms market power {\scriptsize\textcolor{muted}{(Manning, 2003)}}, and women face fewer outside options {\scriptsize\textcolor{muted}{(Webber, 2016; Caldwell \& Danieli, 2022)}}. \bmark{This depresses wages --- but does it also distort hiring and promotion decisions?}
 
     \medskip
-    \item \textbf{The mechanism:} A firm deciding whether to promote weighs the output gain against the wage increase --- but also \emph{retention}. If a male worker has many outside options, the firm promotes to keep him. If a female worker has fewer options, the firm can delay at little cost.
+    \item \textbf{The mechanism:} When deciding whether to promote, the firm weighs the output gain against the wage cost --- and retention. A worker with more outside options must be promoted to be retained; one with fewer can be delayed at little cost.
 
     \medskip
-    \item \textbf{This paper:} connects imperfect competition to gender gaps in career dynamics at \emph{both} the hiring and promotion margins, using matched employer-employee-applicant data from Chile.
+    \item \textbf{This paper:} connects market power to gender gaps in hiring and promotion, using matched employer-employee-applicant data from Chile.
 \end{itemize}
 
 \end{frame}
@@ -109,18 +110,21 @@
 \frametitle{Chile: convergence in education and fertility, persistence in gaps}
 
 \begin{itemize}
-    \item Women surpassed men in tertiary attainment (45\% vs.\ 37\%), TFR fell to 1.03 --- yet the gender wage gap persists at 15--20\% and female labor force participation remains at 53\% (OECD avg: 65\%)
+    \item Women surpassed men in tertiary attainment (45\% vs.\ 37\%), TFR fell to 1.03 --- yet the gender wage gap persists at 15--20\% %and female labor force participation remains at 53\% (OECD avg: 65\%)
 
     \medskip
-    \item These gaps have become a central policy concern, prompting a series of \textbf{labor market reforms} during the 2022--2026 period:
+    \item These gaps have become a central policy concern, prompting a series of \textbf{labor market reforms}:
     \begin{itemize}
-        \item \textbf{40-hour workweek} (Ley 21.561, phased 2024--2028) --- changes the premium on long-hours availability
-        \item \textbf{Flexible work for caregivers} (Ley 21.645, Jan 2024) --- parents of children under 14 can request remote/flexible work
+        \smallskip
+        \item \textbf{40-hour workweek} (Ley 21.561, phased 2024--2028) %--- changes the premium on long-hours availability
+        \smallskip
+        \item \textbf{Flexible work for caregivers} (Ley 21.645, Jan 2024) %--- parents of children under 14 can request remote/flexible work
+        \smallskip
         \item \textbf{Childcare mandate} (Art.\ 203) --- firms with $\geq$20 female workers must fund childcare; firms bunch at 19
     \end{itemize}
 
     \medskip
-    \item Each reform shifts a different \textbf{parameter of the firm's problem} and can be exploited for identification
+    \item Each shifts a different \textbf{parameter of the firm's problem} and can be exploited for identification
 \end{itemize}
 
 \end{frame}
@@ -171,15 +175,15 @@
 
 \vspace{-0.1cm}
 \begin{center}
-\includegraphics[width=0.60\textwidth]{rf_6_4_reform_timeline.png}
+\includegraphics[width=0.75\textwidth]{rf_6_4_reform_timeline.png}
 \end{center}
 
 \vspace{-0.2cm}
 \small
 \begin{itemize}\itemsep1pt
-    \item Platform grew from $\sim$6,500 firms (2022) to 19,000+ (2026); rapid adoption, not firm entry
-    \item Three reforms fall \textbf{within the panel window}, creating pre/post variation
-    \item Art.\ 203 childcare mandate in effect throughout --- cross-sectional RD at 20-female-worker threshold
+    \item Platform grew from $\sim$6,500 firms (2022) to 19,000+ (2026) %; rapid adoption, not firm entry
+    \item Three reforms fall \textbf{within the panel window}. Art.\ 203 mandate throughout %, creating pre/post variation
+    %\item Art.\ 203 childcare mandate in effect throughout --- cross-sectional RD %at 20-female-worker threshold
 \end{itemize}
 
 \end{frame}
@@ -234,12 +238,13 @@ P10 / P90 & 1.00 / 14.00 \\
 
 \vspace{0.3cm}
 \begin{itemize}
-    \item \textbf{Hierarchy:} supervisor identifier (\texttt{boss\_id}) enables org structure and promotion measurement
-    \item \textbf{Job characteristics:} area, standardized occupation (CIUO-08 crosswalk), contract type (fixed-term / indefinite), workday type (full-time, part-time, Art.\ 22 exempt)
-    \item \textbf{Separations:} end date for 83.2\% of completed spells; exit reason (voluntary / involuntary)
+    \item \textbf{Hierarchy:} supervisor identifier enables org structure %and promotion measurement
+    \item \textbf{Job characteristics:} area, standardized occupation, contract type (fixed-term / indefinite), workday type (full-time, part-time, Art.\ 22 exempt)
+    \item \textbf{Separations:} end date for completed spells; exit reason (voluntary / involuntary)
 \end{itemize}
 
 \end{frame}
+
 
 % --- Summary statistics: Compensation ---
 \begin{frame}
@@ -290,8 +295,10 @@ Candidate gender: Male / Female & 56.0\% / 43.0\% \\
 
 \vspace{0.3cm}
 \begin{itemize}
-    \item Each vacancy records functional area, salary range offered, and reason (new position, replacement, temporary)
-    \item Each application has candidate demographics, referral source (portals 40.5\%, company 23.7\%, job boards 14.7\%), and application score
+    \item Vacancy records functional area, salary range offered, and reason % (new position, replacement, temporary)
+    \medskip
+    \item Application has candidate demographics, referral source, and application score
+    \medskip
     \item Heavy right tail --- some vacancies attract 1,000+ applicants
 \end{itemize}
 
@@ -302,7 +309,7 @@ Candidate gender: Male / Female & 56.0\% / 43.0\% \\
 % ============================================================
 
 % --- BUK vs SII comparison ---
-\begin{frame}
+\begin{frame}[label=sampleslide]
 \frametitle{Sample selection: BUK vs.\ the universe of formal Chilean firms}
 
 \begin{center}
@@ -322,39 +329,14 @@ Large        & 28.5 &  1.5 & 79.8 & 53.6 \\
 
 \vspace{0.2cm}
 \begin{itemize}
-    \item Large firms over-represented --- but this is an \textbf{advantage}: model predictions on hiring screening and promotion thresholds are most testable in firms with structured pipelines
-
+    \item Large firms over-represented $\Rightarrow$ \textbf{advantage}: model predictions on hiring and promotion are most testable in these firms %with structured pipelines
     \medskip
     \item \textbf{Gender:} BUK sample is 37.2\% female; formal employment is $\sim$42\% female --- modest under-representation
 
     \medskip
     \item \textbf{Sectors:} public administration absent (public employers don't use platform); manufacturing under-represented; finance, education, real estate over-represented
 \end{itemize}
-
-\end{frame}
-
-% --- Coverage heatmap ---
-\begin{frame}
-\frametitle{Coverage varies by sector and firm size}
-
-\vspace{-0.1cm}
-\begin{columns}[T]
-\begin{column}{0.52\textwidth}
-\includegraphics[width=\textwidth]{../../../../4_Code/images/heatmap_coverage.png}
-\end{column}
-\begin{column}{0.45\textwidth}
-\small
-\vspace{0.3cm}
-Coverage rate = BUK firms / SII firms, by ISIC sector $\times$ firm size.
-
-\vspace{0.3cm}
-\begin{itemize}\itemsep4pt
-    \item Strong coverage among \textbf{large firms} (30--46\%)
-    \item Thin in micro/small and public administration
-    \item Platform expanding into smaller firms (avg.\ empl./firm: 257 in 2022 $\to$ 166 in 2026)
-\end{itemize}
-\end{column}
-\end{columns}
+\hfill\hyperlink{coverage-heatmap}{\beamergotobutton{Coverage heatmap}}
 
 \end{frame}
 
@@ -407,25 +389,26 @@ Coverage rate = BUK firms / SII firms, by ISIC sector $\times$ firm size.
         \item Do firms with greater market power have larger gender gaps in promotions and hiring screening?
     \end{itemize}
 
-    \item \textcolor{faded}{Bonuses vs.\ promotions as retention tools}
+    {\color{faded}\setbeamercolor{enumerate item}{fg=faded}\setbeamercolor{itemize subitem}{fg=faded}\setbeamercolor{normal text}{fg=faded}\usebeamercolor[fg]{normal text}%
+    \item Bonuses vs.\ promotions as retention tools
     \begin{itemize}
-        \item \textcolor{faded}{Do firms substitute variable pay (performance bonuses, commissions) for career advancement, especially for women?}
+        \item Do firms substitute variable pay (performance bonuses, commissions) for career advancement, especially for women?
     \end{itemize}
 
-    \item \textcolor{faded}{The 40-hour workweek and flexible schedule workers}
+    \item The 40-hour workweek and flexible schedule workers
     \begin{itemize}
-        \item \textcolor{faded}{Does restricting Art.\ 22 exemptions hurt workers who valued schedule flexibility --- particularly mothers?}
+        \item Does restricting Art.\ 22 exemptions hurt workers who valued schedule flexibility --- particularly mothers?
     \end{itemize}
 
-    \item \textcolor{faded}{The broken rung at first promotion}
+    \item The broken rung at first promotion
     \begin{itemize}
-        \item \textcolor{faded}{Is there a gender gap at the first promotion, and do long-hours norms explain who gets promoted?}
+        \item Is there a gender gap at the first promotion, and do long-hours norms explain who gets promoted?
     \end{itemize}
 
-    \item \textcolor{faded}{Wage growth over the life cycle}
+    \item Wage growth over the life cycle
     \begin{itemize}
-        \item \textcolor{faded}{How does market power shape wage trajectories by gender at different career stages?}
-    \end{itemize}
+        \item How does market power shape wage trajectories by gender at different career stages?
+    \end{itemize}}
 \end{enumerate}
 
 \end{frame}
@@ -439,7 +422,7 @@ Coverage rate = BUK firms / SII firms, by ISIC sector $\times$ firm size.
 
 \small
 \begin{itemize}\itemsep3pt
-    \item \textbf{Imperfect competition in labor markets:} search frictions give firms market power (Manning, 2003); on-the-job search models show outside options shape the employment relationship (Burdett \& Mortensen, 1998; Postel-Vinay \& Robin, 2002); labor supply elasticities to firms are low (Sokolova \& Sorensen, 2021) --- \bmark{but the focus is on wages}
+    \item \textbf{Imperfect competition in labor markets:} Search frictions give firms market power; outside options shape wages and mobility {\scriptsize\textcolor{muted}{(Manning, 2003; Burdett \& Mortensen, 1998; Postel-Vinay \& Robin, 2002)}} --- \bmark{but the focus is on wages}
 
     \item \textbf{Outside options and gender:} women exhibit lower labor supply elasticities (Webber, 2016; Sharma, 2023); differences in outside options driven by commuting and mobility explain a meaningful share of the gender wage gap (Caldwell \& Danieli, 2022; Morchio \& Moser, 2024); women capture a smaller share of firm pay premiums (Card et al., 2016) --- \bmark{but still only studied for \emph{wages}}
 
@@ -451,7 +434,71 @@ Coverage rate = BUK firms / SII firms, by ISIC sector $\times$ firm size.
 \end{frame}
 
 % ============================================================
-% SECTION F: Model
+% SECTION F: Preliminary Evidence
+% ============================================================
+
+% --- HHI distribution ---
+\begin{frame}[label=hhislide]
+\frametitle{Market concentration varies substantially across labor markets}
+
+HHI computed over occupation $\times$ region cells (8 functional areas $\times$ 16 regions = 1,017 cells):
+
+\vspace{-0.1cm}
+\begin{center}
+\includegraphics[width=0.58\textwidth]{rf_2_4_hhi_distribution_employment_unweighted.png}
+\end{center}
+
+\vspace{-0.2cm}
+\small
+\begin{itemize}\itemsep1pt
+    \item Employment-based mean HHI = 2,249 (moderately concentrated), but substantial right tail
+    \item Geographic variation: Santiago (HHI $\approx$ 209) vs.\ peripheral regions like Ays\'en (HHI $\approx$ 5,690)
+    \item Vacancy-based HHI shows even higher concentration (mean 6,073), driven by thin markets
+\end{itemize}
+\hfill\hyperlink{hhi-vacancy-uw}{\beamergotobutton{Vacancy (unwtd)}}
+\hyperlink{hhi-empl-w}{\beamergotobutton{Empl.\ (wtd)}}
+\hyperlink{hhi-vacancy-w}{\beamergotobutton{Vacancy (wtd)}}
+
+\end{frame}
+
+% --- Promotion gap x concentration (KEY FIGURE) ---
+\begin{frame}
+\frametitle{The gender promotion gap reverses with market concentration}
+
+\begin{center}
+\includegraphics[width=0.62\textwidth]{rf_4_3_promotion_by_gender_hhi.png}
+\end{center}
+
+\vspace{-0.1cm}
+\small
+\begin{itemize}\itemsep2pt
+    \item Aggregate promotion rates nearly identical (F: 2.10\%, M: 2.04\%; 73K promotions over 3.5M person-years)
+    \item But \textbf{the gap reverses with concentration}: women promoted more in competitive markets (+0.32pp), less in concentrated markets ($-$0.23pp)
+    \item Consistent with the retention mechanism: in concentrated markets, women's outside options are weakest, so firms can delay promotions at little cost
+\end{itemize}
+
+\end{frame}
+
+% --- Survey evidence ---
+\begin{frame}
+\frametitle{Survey evidence: perceived inequity widens with organization size}
+
+\begin{center}
+\includegraphics[width=0.55\textwidth]{rf_5_6_pay_equity_by_gender_x_orgsize.png}
+\end{center}
+
+\vspace{-0.2cm}
+\small
+\begin{itemize}\itemsep2pt
+    \item Women perceive \textbf{less pay equity} than men, and the gap \textbf{widens with organization size} --- paralleling the HHI interaction in the promotion data
+    \item Women report fewer promotion opportunities and face worse outcomes at every stage of salary negotiation (WiP Survey 2026)
+    \item Lack of growth is the \textbf{top reason} workers of both genders cite for wanting to change jobs
+\end{itemize}
+
+\end{frame}
+
+% ============================================================
+% SECTION G: Model
 % ============================================================
 
 % --- Model overview (intuitive) ---
@@ -553,67 +600,6 @@ When $\lambda_F < \lambda_M$, two \textbf{opposing forces} shape the firm's scre
 
 \vspace{0.2cm}
 \textbf{Test:} BUK application-to-hire conversion rates by gender, across markets with different concentration.
-
-\end{frame}
-
-% ============================================================
-% SECTION G: Preliminary Evidence
-% ============================================================
-
-% --- HHI distribution ---
-\begin{frame}
-\frametitle{Market concentration varies substantially across labor markets}
-
-HHI computed over occupation $\times$ region cells (8 functional areas $\times$ 16 regions = 1,017 cells):
-
-\vspace{-0.1cm}
-\begin{center}
-\includegraphics[width=0.58\textwidth]{rf_2_4_hhi_distribution_employment_unweighted.png}
-\end{center}
-
-\vspace{-0.2cm}
-\small
-\begin{itemize}\itemsep1pt
-    \item Employment-based mean HHI = 2,249 (moderately concentrated), but substantial right tail
-    \item Geographic variation: Santiago (HHI $\approx$ 209) vs.\ peripheral regions like Ays\'en (HHI $\approx$ 5,690)
-    \item Vacancy-based HHI shows even higher concentration (mean 6,073), driven by thin markets
-\end{itemize}
-
-\end{frame}
-
-% --- Promotion gap x concentration (KEY FIGURE) ---
-\begin{frame}
-\frametitle{The gender promotion gap reverses with market concentration}
-
-\begin{center}
-\includegraphics[width=0.62\textwidth]{rf_4_3_promotion_by_gender_hhi.png}
-\end{center}
-
-\vspace{-0.1cm}
-\small
-\begin{itemize}\itemsep2pt
-    \item Aggregate promotion rates nearly identical (F: 2.10\%, M: 2.04\%; 73K promotions over 3.5M person-years)
-    \item But \textbf{the gap reverses with concentration}: women promoted more in competitive markets (+0.32pp), less in concentrated markets ($-$0.23pp)
-    \item Consistent with the retention mechanism: in concentrated markets, women's outside options are weakest, so firms can delay promotions at little cost
-\end{itemize}
-
-\end{frame}
-
-% --- Survey evidence ---
-\begin{frame}
-\frametitle{Survey evidence: perceived inequity widens with organization size}
-
-\begin{center}
-\includegraphics[width=0.55\textwidth]{rf_5_6_pay_equity_by_gender_x_orgsize.png}
-\end{center}
-
-\vspace{-0.2cm}
-\small
-\begin{itemize}\itemsep2pt
-    \item Women perceive \textbf{less pay equity} than men, and the gap \textbf{widens with organization size} --- paralleling the HHI interaction in the promotion data
-    \item Women report fewer promotion opportunities and face worse outcomes at every stage of salary negotiation (WiP Survey 2026)
-    \item Lack of growth is the \textbf{top reason} workers of both genders cite for wanting to change jobs
-\end{itemize}
 
 \end{frame}
 
@@ -756,14 +742,21 @@ $\quad r_g^P - r_g^N = \lambda_g \bigl[F_g(V_{1g}) - F_g(V_{0g})\bigr]$
 
 \begin{itemize}
     \item \textbf{Sample:} 6,789 respondents in Chile, Colombia, Mexico, Peru
+    \medskip
     \item \textbf{Open survey} --- anyone can respond; \textbf{cannot be linked} to platform data
+    \medskip
     \item \textbf{Topics covered:}
     \begin{itemize}
+        \smallskip
         \item Demographics, salary, job tenure, firm size
+        \smallskip
         \item Job satisfaction, burnout, work-life balance
+        \smallskip
         \item Gender equity perceptions, discrimination, D\&I policies
+        \smallskip
         \item Benefits, performance evaluation, retention intentions
     \end{itemize}
+    \medskip
     \item Provides \textbf{subjective} complement to BUK's \textbf{administrative} records
 \end{itemize}
 
@@ -832,6 +825,68 @@ Women are more likely to ask for a promotion but more likely to be denied (12\% 
 \vspace{-0.1cm}
 \small
 Equal shares didn't ask (44\%) and received unsolicited raises (23\%), but women who asked were less likely to receive (17\% F vs.\ 20\% M) and more likely to be denied (16\% F vs.\ 13\% M). Source: WiP Survey 2025, all countries (N = 3,600).
+
+\end{frame}
+
+% --- Appendix: HHI alternative measures ---
+\begin{frame}[label=hhi-vacancy-uw]
+\frametitle{HHI distribution: vacancy-based (unweighted)}
+
+\begin{center}
+\includegraphics[width=0.62\textwidth]{rf_2_4_hhi_distribution_vacancy_unweighted.png}
+\end{center}
+
+\hfill\hyperlink{hhislide}{\beamerreturnbutton{Back}}
+
+\end{frame}
+
+\begin{frame}[label=hhi-empl-w]
+\frametitle{HHI distribution: employment-based (weighted)}
+
+\begin{center}
+\includegraphics[width=0.62\textwidth]{rf_2_4_hhi_distribution_employment.png}
+\end{center}
+
+\hfill\hyperlink{hhislide}{\beamerreturnbutton{Back}}
+
+\end{frame}
+
+\begin{frame}[label=hhi-vacancy-w]
+\frametitle{HHI distribution: vacancy-based (weighted)}
+
+\begin{center}
+\includegraphics[width=0.62\textwidth]{rf_2_4_hhi_distribution_vacancy.png}
+\end{center}
+
+\hfill\hyperlink{hhislide}{\beamerreturnbutton{Back}}
+
+\end{frame}
+
+% --- Appendix: Coverage heatmap ---
+\begin{frame}[label=coverage-heatmap]
+\frametitle{Coverage varies by sector and firm size}
+
+\vspace{-0.1cm}
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\includegraphics[width=0.84\textwidth]{../../../../4_Code/images/heatmap_coverage.png}
+\end{column}
+\begin{column}{0.45\textwidth}
+\small
+\vspace{0.3cm}
+Coverage rate = BUK firms / SII firms, by ISIC sector $\times$ firm size.
+
+\vspace{0.3cm}
+\begin{itemize}\itemsep4pt
+    \item Strong coverage among \textbf{large firms} (30--46\%)
+    \item Thin in micro/small and public administration
+    \item Platform expanding into smaller firms (avg.\ empl./firm: 257 in 2022 $\to$ 166 in 2026)
+\end{itemize}
+\hfill\hyperlink{sampleslide}{\beamerreturnbutton{Back}}
+\end{column}
+\end{columns}
+
+
 
 \end{frame}
 
