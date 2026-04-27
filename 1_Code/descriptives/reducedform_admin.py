@@ -21,6 +21,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from statsmodels.stats.proportion import proportions_ztest
 import os
 import gc
 
@@ -2110,18 +2111,13 @@ years_43 = list(range(2020, 2026))  # skip early years with near-zero promos
 py_rows = []
 for yr in years_43:
     snap = pd.Timestamp(yr, 12, 31)
-    active = _job43[
-        (_job43["start_date"] <= snap)
-        & ((_job43["end_date"].isna()) | (_job43["end_date"] >= snap))
-    ].drop_duplicates(subset=["employee_id", "tenant_id"])
+    active = _job43[(_job43["start_date"] <= snap) & ((_job43["end_date"].isna()) | (_job43["end_date"] >= snap))].drop_duplicates(subset=["employee_id", "tenant_id"])
     active = active.merge(tenant_region_43, on="tenant_id", how="inner")
-    active = active.merge(_emp[["employee_id", "tenant_id", "gender"]],
-                          on=["employee_id", "tenant_id"], how="inner")
+    active = active.merge(_emp[["employee_id", "tenant_id", "gender"]],on=["employee_id", "tenant_id"], how="inner")
     active = active[active["gender"].isin(["F", "M"])]
     active = active.dropna(subset=["occupation_en", "region"])
     active["year"] = yr
-    py_rows.append(active[["employee_id", "tenant_id", "gender",
-                           "occupation_en", "region", "year"]])
+    py_rows.append(active[["employee_id", "tenant_id", "gender","occupation_en", "region", "year"]])
 
 py43 = pd.concat(py_rows, ignore_index=True)
 print(f"  Person-years with occupation+region: {len(py43):,}")
@@ -2162,6 +2158,21 @@ for _, r in rate43.iterrows():
     print(f"    {r['hhi_tercile']:>6s} {r['gender']}: {r['rate']:.2f}% "
           f"({int(r['n_promos']):,} / {int(r['person_years']):,})")
 
+# --- Difference-in-means test (two-proportion z-test) ---
+print("\n  Difference-in-means test (H0: promotion rate F = M):")
+print(f"  {'Tercile':>8s}  {'Gap (pp)':>8s}  {'z-stat':>8s}  {'p-value':>8s}  sig")
+sig_stars = {}
+for t in tercile_order:
+    rf = rate43[(rate43["hhi_tercile"] == t) & (rate43["gender"] == "F")].iloc[0]
+    rm = rate43[(rate43["hhi_tercile"] == t) & (rate43["gender"] == "M")].iloc[0]
+    x_f, n_f = int(rf["n_promos"]), int(rf["person_years"])
+    x_m, n_m = int(rm["n_promos"]), int(rm["person_years"])
+    z_stat, p_val = proportions_ztest([x_f, x_m], [n_f, n_m])
+    stars = "***" if p_val < 0.01 else "**" if p_val < 0.05 else "*" if p_val < 0.1 else ""
+    sig_stars[t] = stars
+    gap = rf["rate"] - rm["rate"]
+    print(f"  {t:>8s}  {gap:>+8.2f}  {z_stat:>8.3f}  {p_val:>8.4f}  {stars}")
+
 # --- Grouped bar chart ---
 fig, ax = plt.subplots(figsize=(9, 5.5))
 x = np.arange(len(tercile_order))
@@ -2187,14 +2198,15 @@ fig.text(0.5, 0.90, "Employment-based HHI terciles (occupation x region cells)",
          ha="center", fontsize=11, color="#666666")
 ax.legend(frameon=True, framealpha=0.9)
 
-# Gender gap annotation
+# Gender gap annotation (with significance stars)
 for t_idx, t in enumerate(tercile_order):
     f_rate = rate43[(rate43["hhi_tercile"] == t) & (rate43["gender"] == "F")]["rate"].values
     m_rate = rate43[(rate43["hhi_tercile"] == t) & (rate43["gender"] == "M")]["rate"].values
     if len(f_rate) > 0 and len(m_rate) > 0:
         gap = f_rate[0] - m_rate[0]
+        stars = sig_stars.get(t, "")
         y_pos = max(f_rate[0], m_rate[0]) + 0.35
-        ax.text(t_idx, y_pos, f"gap: {gap:+.2f}pp",
+        ax.text(t_idx, y_pos, f"gap: {gap:+.2f}pp{stars}",
                 ha="center", fontsize=9, color="#666666", style="italic")
 
 fig.text(0.01, -0.04,

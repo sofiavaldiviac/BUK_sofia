@@ -14,6 +14,13 @@
 #   Plot 5.4  (task issue2_30) — Burnout and work-life interference by gender
 #   Plot 5.5  (task issue2_31) — Most valued job attributes by gender
 #   Plot 5.6  (task issue2_32) — Pay equity perceptions by gender x org size
+#
+# --- WiP 2025 Survey (new) ---
+#   Plot 5.7  — Promotion negotiation funnel by gender (2025 J3)
+#   Plot 5.8  — Reasons for promotion denial by gender (2025 J3_1)
+#   Plot 5.9  — Salary negotiation funnel by gender (2025 J4)
+#   Plot 5.10 — Reasons for salary denial by gender (2025 J4_1)
+#   Plot 5.11 — Overtime hours by gender (2025 B2)
 # ==============================================================================
 
 # --- Libraries ----------------------------------------------------------------
@@ -22,8 +29,7 @@ library(tidyverse)
 
 # --- Paths --------------------------------------------------------------------
 data_path <- file.path(
-  "/Users/sofiavaldivia/Documents/GitHub/Chile_BUK_CNS",
-  "3_Documents/Original/Base de datos WiP 2026.xlsx"
+  "/Users/sofiavaldivia/Dropbox/BUK/data/buk_data/survey_data/Base de datos WiP 2026.xlsx"
 )
 fig_dir <- "/Users/sofiavaldivia/Documents/GitHub/Chile_BUK_CNS/BUK_sofia/1_Code/figures"
 dir.create(fig_dir, showWarnings = FALSE, recursive = TRUE)
@@ -169,6 +175,157 @@ plot_sets <- list(
 )
 
 # ==============================================================================
+# 1B. DATA LOADING — WiP 2025
+# ==============================================================================
+# The 2025 survey has NO pre-recoded columns — all raw text.
+# Column positions verified against the actual Excel headers.
+
+data_path_25 <- file.path(
+  "/Users/sofiavaldivia/Dropbox/BUK/data/buk_data/survey_data/Base de datos WiP 2025.xlsx"
+)
+
+raw25 <- read_excel(data_path_25, sheet = 1)
+cat("2025 raw data:", nrow(raw25), "rows,", ncol(raw25), "columns\n")
+
+df25 <- tibble(
+  # --- Demographics ---
+  gender            = raw25[[3]],    # A1: Gender
+  country           = raw25[[6]],    # A4: Country
+  org_size          = raw25[[9]],    # A7: Organization size
+  industry          = raw25[[10]],   # A8: Industry
+
+  # --- Overtime (B2) ---
+  overtime_raw      = raw25[[30]],   # B2: Weekly overtime hours
+
+  # --- Promotion negotiation (J3) ---
+  promo_negotiation = raw25[[103]],  # J3: Promotion request experience
+
+  # --- Promotion denial reasons (J3_1, multiple selection) ---
+  promo_deny_experience  = raw25[[104]],  # J3_1_1: Lack of experience
+  promo_deny_technical   = raw25[[105]],  # J3_1_2: Lack of technical skills
+  promo_deny_leadership  = raw25[[106]],  # J3_1_3: Lack of leadership skills
+  promo_deny_performance = raw25[[107]],  # J3_1_4: Insufficient performance
+  promo_deny_other_cand  = raw25[[108]],  # J3_1_5: Preference for another candidate
+  promo_deny_no_reason   = raw25[[109]],  # J3_1_6: No clear reasons
+
+  # --- Salary raise negotiation (J4) ---
+  raise_negotiation = raw25[[110]],  # J4: Salary raise experience
+
+  # --- Salary denial reasons (J4_1, multiple selection) ---
+  raise_deny_market      = raw25[[111]],  # J4_1_1: Market aligned
+  raise_deny_recent      = raw25[[112]],  # J4_1_2: Recent adjustment
+  raise_deny_performance = raw25[[113]],  # J4_1_3: Insufficient performance
+  raise_deny_budget      = raw25[[114]],  # J4_1_4: Lack of budget
+  raise_deny_no_reason   = raw25[[115]]   # J4_1_5: No clear reasons
+)
+rm(raw25); gc()
+
+# --- Gender recoding (same as 2026) -------------------------------------------
+df25 <- df25 %>%
+  mutate(gender = case_when(
+    gender == "Femenino"  ~ "Female",
+    gender == "Masculino" ~ "Male",
+    gender == "Otro"      ~ "Other",
+    TRUE ~ NA_character_
+  ))
+df25$gender <- factor(df25$gender, levels = c("Female", "Male", "Other"))
+
+# --- Org size factor (match 2026 levels) --------------------------------------
+df25 <- df25 %>%
+  mutate(
+    org_size_f = case_when(
+      org_size == "<10"        ~ "10 or fewer",
+      org_size == "11-49"      ~ "11-49",
+      org_size == "50-199"     ~ "50-199",
+      org_size %in% c("200-499", "500-999", "1000 o más") ~ "200+",
+      TRUE ~ NA_character_
+    ),
+    org_size_f = factor(org_size_f, levels = c("10 or fewer", "11-49", "50-199", "200+"))
+  )
+
+# --- Industry normalization (fix casing, top 6 + Other) -----------------------
+df25 <- df25 %>%
+  mutate(
+    industry_clean = case_when(
+      grepl("(?i)tecnolog", industry)        ~ "Technology",
+      grepl("(?i)comercio", industry)        ~ "Retail",
+      grepl("(?i)educaci", industry)         ~ "Education",
+      grepl("(?i)servicio", industry)        ~ "Services",
+      grepl("(?i)financiera", industry)      ~ "Finance & Insurance",
+      grepl("(?i)salud", industry)           ~ "Health",
+      is.na(industry)                        ~ NA_character_,
+      TRUE                                   ~ "Other"
+    ),
+    industry_clean = factor(industry_clean,
+                            levels = c("Technology", "Retail", "Education",
+                                       "Services", "Finance & Insurance", "Health", "Other"))
+  )
+
+# --- Overtime recoding (B2) ---------------------------------------------------
+df25 <- df25 %>%
+  mutate(
+    overtime_hrs = case_when(
+      overtime_raw == "No trabajo horas extra" ~ 0,
+      overtime_raw == "Más de 15 horas"        ~ 16,
+      TRUE ~ suppressWarnings(as.numeric(gsub(",", "", overtime_raw)))
+    )
+  )
+
+# --- Promotion funnel recoding (J3) -------------------------------------------
+df25 <- df25 %>%
+  mutate(
+    promo_stage = case_when(
+      grepl("No he pedido un ascenso", promo_negotiation)        ~ "Didn't ask",
+      grepl("me lo ofreci\u00f3", promo_negotiation)             ~ "Company offered",
+      grepl("S\u00ed.*y S\u00cd me lo dieron", promo_negotiation) ~ "Asked & received",
+      grepl("S\u00ed.*NO me lo dieron", promo_negotiation)       ~ "Asked & denied",
+      TRUE ~ NA_character_
+    ),
+    promo_stage = factor(promo_stage,
+                         levels = c("Didn't ask", "Company offered",
+                                    "Asked & received", "Asked & denied"))
+  )
+
+# --- Salary raise funnel recoding (J4) ----------------------------------------
+df25 <- df25 %>%
+  mutate(
+    raise_stage = case_when(
+      grepl("No he pedido un aumento", raise_negotiation)        ~ "Didn't ask",
+      grepl("me lo ofreci\u00f3", raise_negotiation)             ~ "Company offered",
+      grepl("S\u00ed.*y S\u00cd me lo dieron", raise_negotiation) ~ "Asked & received",
+      grepl("S\u00ed.*NO me lo dieron", raise_negotiation)       ~ "Asked & denied",
+      TRUE ~ NA_character_
+    ),
+    raise_stage = factor(raise_stage,
+                         levels = c("Didn't ask", "Company offered",
+                                    "Asked & received", "Asked & denied"))
+  )
+
+# --- Multiple-selection: non-NA = 1, NA = 0 -----------------------------------
+df25 <- df25 %>%
+  mutate(
+    across(starts_with("promo_deny_"), ~ as.integer(!is.na(.x))),
+    across(starts_with("raise_deny_"), ~ as.integer(!is.na(.x)))
+  )
+
+# --- Filter to binary gender --------------------------------------------------
+df25_bin_all <- df25 %>% filter(gender %in% c("Female", "Male"))
+df25_bin_all$gender <- droplevels(df25_bin_all$gender)
+cat("2025 all countries:", nrow(df25_bin_all), "observations\n")
+
+df25_bin <- df25_bin_all %>% filter(country == "Chile")
+cat("2025 Chile only:", nrow(df25_bin), "observations\n")
+cat("  Female:", sum(df25_bin$gender == "Female"),
+    " Male:", sum(df25_bin$gender == "Male"), "\n\n")
+
+# --- Datasets to loop over (2025) ---------------------------------------------
+plot_sets_25 <- list(
+  list(data = df25_bin,     label = "Chile subsample, 2025", pfx = "rf25"),
+  list(data = df25_bin_all, label = "all countries, 2025",   pfx = "rf25_all")
+)
+
+
+# ==============================================================================
 # 2. THEME & HELPERS
 # ==============================================================================
 
@@ -293,6 +450,43 @@ for (ps in plot_sets) {
     scale_y_continuous(expand = expansion(mult = c(0, 0.20)))
 
   save_plot(p, paste0(ps$pfx, "_1_6_turnover_reasons_by_gender"), w = 9, h = 5.5)
+
+  # --- Plot 1.6b: Turnover reasons by gender x org size -----------------------
+  d_org <- ps$data %>%
+    filter(turnover_intent_rec2 %in% c(1, 2), !is.na(org_size_f)) %>%
+    select(gender, org_size_f, all_of(turn_vars)) %>%
+    pivot_longer(-c(gender, org_size_f), names_to = "reason", values_to = "selected") %>%
+    filter(!is.na(selected)) %>%
+    group_by(gender, org_size_f, reason) %>%
+    summarise(pct = mean(selected == 1, na.rm = TRUE) * 100,
+              n = n(), .groups = "drop") %>%
+    mutate(
+      reason_label = turn_labels[match(reason, turn_vars)],
+      reason_label = fct_reorder(reason_label, pct, .fun = max)
+    )
+
+  nn_org <- ps$data %>%
+    filter(turnover_intent_rec2 %in% c(1, 2), !is.na(org_size_f)) %>% nrow()
+  cat("  [", ps$label, "] N wanting to change (with org size):", nn_org, "\n")
+
+  p_org <- ggplot(d_org, aes(x = reason_label, y = pct, fill = gender)) +
+    geom_col(position = position_dodge(0.8), width = 0.7) +
+    geom_text(aes(label = paste0(round(pct), "%")),
+              position = position_dodge(0.8), hjust = -0.15, size = 2.5) +
+    coord_flip() +
+    facet_wrap(~ org_size_f, nrow = 1) +
+    scale_fill_manual(values = pal_gender) +
+    labs(
+      title    = "Reasons for Wanting to Change Job, by Gender and Organization Size",
+      subtitle = "Among workers who want to change (conditional on turnover intent)",
+      x = "", y = "% citing reason",
+      caption  = paste0("Source: Work in Progress Survey 2026 (", ps$label, ", N = ",
+                        format(nn_org, big.mark = ","), ")")
+    ) +
+    theme_rf +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.25)))
+
+  save_plot(p_org, paste0(ps$pfx, "_1_6_turnover_reasons_by_gender_org"), w = 14, h = 6)
 }
 
 
@@ -667,6 +861,301 @@ for (ps in plot_sets) {
     scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
 
   save_plot(p, paste0(ps$pfx, "_5_6_pay_equity_by_gender_x_orgsize"), w = 9, h = 5.5)
+}
+
+
+# ==============================================================================
+# PLOT 5.7 — Promotion Negotiation Funnel by Gender (2025 J3)
+# ==============================================================================
+cat("\n--- Plot 5.7: Promotion Negotiation Funnel by Gender (2025) ---\n")
+
+pal_stage4 <- c("Didn't ask"       = "#1B4F72",
+                "Company offered"   = "#2E86C1",
+                "Asked & received"  = "#85C1E9",
+                "Asked & denied"    = "#D6EAF8")
+
+for (ps in plot_sets_25) {
+  d <- ps$data %>%
+    filter(!is.na(promo_stage)) %>%
+    group_by(gender, promo_stage) %>%
+    summarise(n = n(), .groups = "drop") %>%
+    group_by(gender) %>%
+    mutate(pct = n / sum(n) * 100)
+
+  nn <- sum(d$n)
+  cat("  [", ps$label, "] N:", nn, "\n")
+
+  # (a) Grouped bar chart
+  p_a <- ggplot(d, aes(x = promo_stage, y = pct, fill = gender)) +
+    geom_col(position = position_dodge(0.8), width = 0.7) +
+    geom_text(aes(label = paste0(round(pct), "%")),
+              position = position_dodge(0.8), vjust = -0.4, size = 3.2) +
+    scale_fill_manual(values = pal_gender) +
+    labs(
+      title    = "Promotion Negotiation Funnel by Gender",
+      subtitle = "Experience requesting a promotion in the last 2 years",
+      x = "", y = "Share of respondents (%)",
+      caption  = paste0("Source: Work in Progress Survey 2025 (", ps$label, ", N = ",
+                        format(nn, big.mark = ","), ")")
+    ) +
+    theme_rf +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+
+  save_plot(p_a, paste0(ps$pfx, "_5_7_promotion_funnel_by_gender"), w = 10, h = 5.5)
+
+  # (b) Stacked 100% bar
+  p_b <- ggplot(d, aes(x = gender, y = pct, fill = promo_stage)) +
+    geom_col(width = 0.6) +
+    geom_text(aes(label = paste0(round(pct), "%")),
+              position = position_stack(vjust = 0.5), size = 3.5,
+              color = "white", fontface = "bold") +
+    scale_fill_manual(values = pal_stage4, name = "") +
+    labs(
+      title    = "Promotion Negotiation Funnel by Gender",
+      subtitle = "Distribution of promotion request outcomes",
+      x = "", y = "Share of respondents (%)",
+      caption  = paste0("Source: Work in Progress Survey 2025 (", ps$label, ", N = ",
+                        format(nn, big.mark = ","), ")")
+    ) +
+    theme_rf +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.02)))
+
+  save_plot(p_b, paste0(ps$pfx, "_5_7_promotion_funnel_stacked"), w = 8, h = 5)
+}
+
+
+# ==============================================================================
+# PLOT 5.8 — Reasons for Promotion Denial by Gender (2025 J3_1)
+# ==============================================================================
+cat("\n--- Plot 5.8: Promotion Denial Reasons by Gender (2025) ---\n")
+
+promo_deny_vars   <- c("promo_deny_experience", "promo_deny_technical",
+                        "promo_deny_leadership", "promo_deny_performance",
+                        "promo_deny_other_cand", "promo_deny_no_reason")
+promo_deny_labels <- c("Lack of experience", "Lack of technical skills",
+                        "Lack of leadership", "Insufficient performance",
+                        "Preference for\nanother candidate", "No clear reasons\ngiven")
+
+for (ps in plot_sets_25) {
+  base <- ps$data %>% filter(promo_stage == "Asked & denied")
+  nn <- nrow(base)
+  cat("  [", ps$label, "] N denied:", nn, "\n")
+
+  d <- base %>%
+    select(gender, all_of(promo_deny_vars)) %>%
+    pivot_longer(-gender, names_to = "reason", values_to = "selected") %>%
+    group_by(gender, reason) %>%
+    summarise(pct = mean(selected == 1, na.rm = TRUE) * 100,
+              n = n(), .groups = "drop") %>%
+    mutate(
+      reason_label = promo_deny_labels[match(reason, promo_deny_vars)],
+      reason_label = fct_reorder(reason_label, pct, .fun = max)
+    )
+
+  sub_text <- "Among workers whose promotion request was denied"
+  if (nn < 150) sub_text <- paste0(sub_text, " (N = ", nn, ", interpret with caution)")
+
+  p <- ggplot(d, aes(x = reason_label, y = pct, fill = gender)) +
+    geom_col(position = position_dodge(0.8), width = 0.7) +
+    geom_text(aes(label = paste0(round(pct), "%")),
+              position = position_dodge(0.8), hjust = -0.15, size = 3) +
+    coord_flip() +
+    scale_fill_manual(values = pal_gender) +
+    labs(
+      title    = "Reasons for Promotion Denial, by Gender",
+      subtitle = sub_text,
+      x = "", y = "% citing reason",
+      caption  = paste0("Source: Work in Progress Survey 2025 (", ps$label, ", N = ",
+                        format(nn, big.mark = ","), ")")
+    ) +
+    theme_rf +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.20)))
+
+  save_plot(p, paste0(ps$pfx, "_5_8_promotion_denial_reasons_by_gender"), w = 9, h = 5.5)
+}
+
+
+# ==============================================================================
+# PLOT 5.9 — Salary Negotiation Funnel by Gender (2025 J4)
+# ==============================================================================
+cat("\n--- Plot 5.9: Salary Negotiation Funnel by Gender (2025) ---\n")
+
+for (ps in plot_sets_25) {
+  d <- ps$data %>%
+    filter(!is.na(raise_stage)) %>%
+    group_by(gender, raise_stage) %>%
+    summarise(n = n(), .groups = "drop") %>%
+    group_by(gender) %>%
+    mutate(pct = n / sum(n) * 100)
+
+  nn <- sum(d$n)
+  cat("  [", ps$label, "] N:", nn, "\n")
+
+  # (a) Grouped bar chart
+  p_a <- ggplot(d, aes(x = raise_stage, y = pct, fill = gender)) +
+    geom_col(position = position_dodge(0.8), width = 0.7) +
+    geom_text(aes(label = paste0(round(pct), "%")),
+              position = position_dodge(0.8), vjust = -0.4, size = 3.2) +
+    scale_fill_manual(values = pal_gender) +
+    labs(
+      title    = "Salary Negotiation Funnel by Gender",
+      subtitle = "Experience requesting a salary raise in the last 2 years",
+      x = "", y = "Share of respondents (%)",
+      caption  = paste0("Source: Work in Progress Survey 2025 (", ps$label, ", N = ",
+                        format(nn, big.mark = ","), ")")
+    ) +
+    theme_rf +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+
+  save_plot(p_a, paste0(ps$pfx, "_5_9_salary_funnel_by_gender"), w = 10, h = 5.5)
+
+  # (b) Stacked 100% bar
+  p_b <- ggplot(d, aes(x = gender, y = pct, fill = raise_stage)) +
+    geom_col(width = 0.6) +
+    geom_text(aes(label = paste0(round(pct), "%")),
+              position = position_stack(vjust = 0.5), size = 3.5,
+              color = "white", fontface = "bold") +
+    scale_fill_manual(values = pal_stage4, name = "") +
+    labs(
+      title    = "Salary Negotiation Funnel by Gender",
+      subtitle = "Distribution of salary raise request outcomes",
+      x = "", y = "Share of respondents (%)",
+      caption  = paste0("Source: Work in Progress Survey 2025 (", ps$label, ", N = ",
+                        format(nn, big.mark = ","), ")")
+    ) +
+    theme_rf +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.02)))
+
+  save_plot(p_b, paste0(ps$pfx, "_5_9_salary_funnel_stacked"), w = 8, h = 5)
+}
+
+
+# ==============================================================================
+# PLOT 5.10 — Reasons for Salary Denial by Gender (2025 J4_1)
+# ==============================================================================
+cat("\n--- Plot 5.10: Salary Denial Reasons by Gender (2025) ---\n")
+
+raise_deny_vars   <- c("raise_deny_market", "raise_deny_recent",
+                        "raise_deny_performance", "raise_deny_budget",
+                        "raise_deny_no_reason")
+raise_deny_labels <- c("Already market-aligned", "Recent salary\nadjustment",
+                        "Insufficient\nperformance", "Lack of budget",
+                        "No clear reasons\ngiven")
+
+for (ps in plot_sets_25) {
+  base <- ps$data %>% filter(raise_stage == "Asked & denied")
+  nn <- nrow(base)
+  cat("  [", ps$label, "] N denied:", nn, "\n")
+
+  d <- base %>%
+    select(gender, all_of(raise_deny_vars)) %>%
+    pivot_longer(-gender, names_to = "reason", values_to = "selected") %>%
+    group_by(gender, reason) %>%
+    summarise(pct = mean(selected == 1, na.rm = TRUE) * 100,
+              n = n(), .groups = "drop") %>%
+    mutate(
+      reason_label = raise_deny_labels[match(reason, raise_deny_vars)],
+      reason_label = fct_reorder(reason_label, pct, .fun = max)
+    )
+
+  sub_text <- "Among workers whose salary raise request was denied"
+  if (nn < 150) sub_text <- paste0(sub_text, " (N = ", nn, ", interpret with caution)")
+
+  p <- ggplot(d, aes(x = reason_label, y = pct, fill = gender)) +
+    geom_col(position = position_dodge(0.8), width = 0.7) +
+    geom_text(aes(label = paste0(round(pct), "%")),
+              position = position_dodge(0.8), hjust = -0.15, size = 3) +
+    coord_flip() +
+    scale_fill_manual(values = pal_gender) +
+    labs(
+      title    = "Reasons for Salary Raise Denial, by Gender",
+      subtitle = sub_text,
+      x = "", y = "% citing reason",
+      caption  = paste0("Source: Work in Progress Survey 2025 (", ps$label, ", N = ",
+                        format(nn, big.mark = ","), ")")
+    ) +
+    theme_rf +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.20)))
+
+  save_plot(p, paste0(ps$pfx, "_5_10_salary_denial_reasons_by_gender"), w = 9, h = 5.5)
+}
+
+
+# ==============================================================================
+# PLOT 5.11 — Overtime Hours by Gender (2025 B2)
+# ==============================================================================
+cat("\n--- Plot 5.11: Overtime Hours by Gender (2025) ---\n")
+
+for (ps in plot_sets_25) {
+  d <- ps$data %>%
+    filter(!is.na(overtime_hrs)) %>%
+    mutate(
+      ot_bin = case_when(
+        overtime_hrs == 0              ~ "0 (none)",
+        overtime_hrs >= 1  & overtime_hrs <= 4  ~ "1-4",
+        overtime_hrs >= 5  & overtime_hrs <= 9  ~ "5-9",
+        overtime_hrs >= 10 & overtime_hrs <= 14 ~ "10-14",
+        overtime_hrs >= 15                      ~ "15+"
+      ),
+      ot_bin = factor(ot_bin, levels = c("0 (none)", "1-4", "5-9", "10-14", "15+"))
+    )
+
+  nn <- nrow(d)
+  cat("  [", ps$label, "] N:", nn, "\n")
+
+  # (a) Overall: distribution of overtime bins by gender
+  d_overall <- d %>%
+    group_by(gender, ot_bin) %>%
+    summarise(n = n(), .groups = "drop") %>%
+    group_by(gender) %>%
+    mutate(pct = n / sum(n) * 100)
+
+  p_a <- ggplot(d_overall, aes(x = ot_bin, y = pct, fill = gender)) +
+    geom_col(position = position_dodge(0.8), width = 0.7) +
+    geom_text(aes(label = paste0(round(pct), "%")),
+              position = position_dodge(0.8), vjust = -0.4, size = 3) +
+    scale_fill_manual(values = pal_gender) +
+    labs(
+      title    = "Weekly Overtime Hours by Gender",
+      subtitle = "Distribution of self-reported overtime hours per week",
+      x = "Overtime hours per week", y = "Share of respondents (%)",
+      caption  = paste0("Source: Work in Progress Survey 2025 (", ps$label, ", N = ",
+                        format(nn, big.mark = ","), ")")
+    ) +
+    theme_rf +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+
+  save_plot(p_a, paste0(ps$pfx, "_5_11_overtime_by_gender"), w = 9, h = 5.5)
+
+  # (b) By top industries (exclude "Other" from facet)
+  d_ind <- d %>%
+    filter(!is.na(industry_clean), industry_clean != "Other") %>%
+    group_by(gender, industry_clean) %>%
+    summarise(mean_ot = mean(overtime_hrs, na.rm = TRUE),
+              n = n(), .groups = "drop")
+
+  nn_ind <- sum(d_ind$n)
+  if (nn_ind > 50) {
+    p_b <- ggplot(d_ind, aes(x = industry_clean, y = mean_ot, fill = gender)) +
+      geom_col(position = position_dodge(0.8), width = 0.7) +
+      geom_text(aes(label = sprintf("%.1f", mean_ot)),
+                position = position_dodge(0.8), vjust = -0.4, size = 2.8) +
+      scale_fill_manual(values = pal_gender) +
+      labs(
+        title    = "Mean Weekly Overtime Hours by Gender and Industry",
+        subtitle = "Top 6 industries by respondent count",
+        x = "", y = "Mean overtime hours/week",
+        caption  = paste0("Source: Work in Progress Survey 2025 (", ps$label, ", N = ",
+                          format(nn_ind, big.mark = ","), ")")
+      ) +
+      theme_rf +
+      theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
+      scale_y_continuous(expand = expansion(mult = c(0, 0.15)))
+
+    save_plot(p_b, paste0(ps$pfx, "_5_11_overtime_by_gender_industry"), w = 10, h = 5.5)
+  } else {
+    cat("    Skipping industry facet — too few observations (", nn_ind, ")\n")
+  }
 }
 
 

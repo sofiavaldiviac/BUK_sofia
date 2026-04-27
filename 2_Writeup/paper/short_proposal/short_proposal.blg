@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: short_proposal.aux
+The style file: aer.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: ../bib.bib
+Warning--empty journal in morchio_gender_2024
+Warning--empty journal in Schubert_Stansbury_Taska_2024
+Warning--there's a number but no volume in Schubert_Stansbury_Taska_2024
+You've used 25 entries,
+            2984 wiz_defined-function locations,
+            802 strings with 8223 characters,
+and the built_in function-call counts, 21414 in all, are:
+= -- 3446
+> -- 1158
+< -- 336
++ -- 358
+- -- 200
+* -- 1354
+:= -- 4808
+add.period$ -- 28
+call.type$ -- 25
+change.case$ -- 175
+chr.to.int$ -- 25
+cite$ -- 28
+duplicate$ -- 274
+empty$ -- 669
+format.name$ -- 586
+if$ -- 5313
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 21
+newline$ -- 84
+num.names$ -- 300
+pop$ -- 361
+preamble$ -- 1
+purify$ -- 200
+quote$ -- 0
+skip$ -- 0
+stack$ -- 0
+substring$ -- 767
+swap$ -- 93
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 98
+warning$ -- 3
+while$ -- 283
+width$ -- 0
+write$ -- 417
+(There were 3 warnings)

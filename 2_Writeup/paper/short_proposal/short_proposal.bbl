@@ -1,0 +1,84 @@
+\ifx\undefined\bysame
+\newcommand{\bysame}{\leavevmode\hbox to\leftmargin{\hrulefill\,\,}}
+\fi
+\begin{thebibliography}{xx}
+
+\harvarditem[Azar et al.]{Azar, Marinescu and Steinbaum}{2022}{azar_labor_2022}
+{\bf Azar, José, Ioana Marinescu, and Marshall Steinbaum}, ``Labor Market Concentration,'' {\it Journal of Human Resources}, 2022, {\it 57} (S), S167--S199.
+
+\harvarditem[Benson et al.]{Benson, Li and Shue}{2026}{benson_potential_2026}
+{\bf Benson, Alan, Danielle Li, and Kelly Shue}, ``“{Potential}” and the {Gender} {Promotion} {Gap},'' {\it American Economic Review}, February 2026, {\it 116} (2), 375--417.
+
+\harvarditem[Berger et al.]{Berger, Herkenhoff and Mongey}{2022}{berger_labor_2022}
+{\bf Berger, David, Kyle Herkenhoff, and Simon Mongey}, ``Labor {Market} {Power},'' {\it American Economic Review}, April 2022, {\it 112} (4), 1147--1193.
+
+\harvarditem[Bertrand and Mullainathan]{Bertrand and Mullainathan}{2004}{bertrand_are_2004}
+{\bf Bertrand, Marianne and Sendhil Mullainathan}, ``Are {Emily} and {Greg} {More} {Employable} {Than} {Lakisha} and {Jamal}? {A} {Field} {Experiment} on {Labor} {Market} {Discrimination},'' {\it American Economic Review}, September 2004, {\it 94} (4), 991--1013.
+
+\harvarditem[Blau and Kahn]{Blau and Kahn}{2017}{blau_gender_2017}
+{\bf Blau, Francine~D. and Lawrence~M. Kahn}, ``The Gender Wage Gap: Extent, Trends, and Explanations,'' {\it Journal of Economic Literature}, 2017, {\it 55} (3), 789--865.
+
+\harvarditem[Burdett and Mortensen]{Burdett and Mortensen}{1998}{burdett_wage_1998}
+{\bf Burdett, Kenneth and Dale~T. Mortensen}, ``Wage {Differentials}, {Employer} {Size}, and {Unemployment},'' {\it International Economic Review}, 1998, {\it 39} (2), 257--273.
+
+\harvarditem[Caldwell and Oehlsen]{Caldwell and Oehlsen}{2022}{caldwell_gender_2022}
+{\bf Caldwell, Sydnee and Emily Oehlsen}, ``Gender Differences in Labor Supply: Experimental Evidence from the Gig Economy,'' 2022.
+\newblock University of California, Berkeley Working Paper.
+
+\harvarditem[Caldwell and Danieli]{Caldwell and Danieli}{2024}{caldwell_outside_nodate}
+{\bf \bysame{} and Oren Danieli}, ``Outside Options in the Labour Market,'' {\it The Review of Economic Studies}, November 2024, {\it 91} (6), 3286–3315.
+
+\harvarditem[Card et al.]{Card, Cardoso and Kline}{2016}{card_bargaining_2016}
+{\bf Card, David, Ana~Rute Cardoso, and Patrick Kline}, ``Bargaining, {Sorting}, and the {Gender} {Wage} {Gap}: {Quantifying} the {Impact} of {Firms} on the {Relative} {Pay} of {Women} *,'' {\it The Quarterly Journal of Economics}, May 2016, {\it 131} (2), 633--686.
+
+\harvarditem[Gibbons and Waldman]{Gibbons and Waldman}{1999}{gibbons_theory_1999}
+{\bf Gibbons, Robert and Michael Waldman}, ``A Theory of Wage and Promotion Dynamics Inside Firms,'' {\it The Quarterly Journal of Economics}, 1999, {\it 114} (4), 1321--1358.
+
+\harvarditem[Goldin]{Goldin}{2014}{goldin_grand_2014}
+{\bf Goldin, Claudia}, ``A Grand Gender Convergence: Its Last Chapter,'' {\it American Economic Review}, 2014, {\it 104} (4), 1091--1119.
+
+\harvarditem[{Instituto Nacional de Estadísticas}]{{Instituto Nacional de Estadísticas}}{2024}{ine_anuario_2024}
+{\bf {Instituto Nacional de Estadísticas}}, ``Anuario de Estadísticas Vitales 1950--2024,'' 2024.
+
+\harvarditem[Jarosch et al.]{Jarosch, Nimczik and Sorkin}{2024}{Jarosch_Nimczik_Sorkin_2024}
+{\bf Jarosch, Gregor, Jan~Sebastian Nimczik, and Isaac Sorkin}, ``Granular Search, Market Structure, and Wages,'' {\it Review of Economic Studies}, November 2024, {\it 91} (6), 3569–3607.
+
+\harvarditem[Kleven et al.]{Kleven, Landais and Søgaard}{2019}{kleven_children_2019}
+{\bf Kleven, Henrik, Camille Landais, and Jakob~Egholt Søgaard}, ``Children and Gender Inequality: Evidence from {Denmark},'' {\it American Economic Journal: Applied Economics}, 2019, {\it 11} (1), 181--209.
+
+\harvarditem[Kline et al.]{Kline, Rose and Walters}{2022}{kline_systemic_2022}
+{\bf Kline, Patrick, Evan~K Rose, and Christopher~R Walters}, ``Systemic {Discrimination} {Among} {Large} {U}.{S}. {Employers},'' {\it The Quarterly Journal of Economics}, September 2022, {\it 137} (4), 1963--2036.
+
+\harvarditem[Manning]{Manning}{2003}{manning_monopsony_2003}
+{\bf Manning, Alan}, {\it Monopsony in Motion: Imperfect Competition in Labor Markets}, Princeton University Press, 2003.
+
+\harvarditem[Manning]{Manning}{2011}{manning_imperfect_2011}
+{\bf \bysame{}}, ``Imperfect Competition in the Labor Market,'' in ``Handbook of Labor Economics,'' Vol.~4B, Elsevier, 2011, pp.~973--1041.
+
+\harvarditem[Morchio and Moser]{Morchio and Moser}{2024}{morchio_gender_2024}
+{\bf Morchio, Iacopo and Christian Moser}, ``The Gender Pay Gap: Micro Sources and Macro Consequences,'' 2024.
+
+\harvarditem[{OECD}]{{OECD}}{2024}{oecd_education_2024}
+{\bf {OECD}}, ``Education at a Glance 2024: Chile -- Country Note,'' 2024.
+
+\harvarditem[Postel-Vinay and Robin]{Postel-Vinay and Robin}{2002}{postel-vinay_equilibrium_2002}
+{\bf Postel-Vinay, Fabien and Jean-Marc Robin}, ``Equilibrium {Wage} {Dispersion} with {Worker} and {Employer} {Heterogeneity},'' {\it Econometrica}, 2002, {\it 70} (6), 2295--2350.
+
+\harvarditem[Schubert et al.]{Schubert, Stansbury and Taska}{2024}{Schubert_Stansbury_Taska_2024}
+{\bf Schubert, Gregor, Anna Stansbury, and Bledi Taska}, ``Employer Concentration and Outside Options,'' January 2024, (3599454).
+
+\harvarditem[Sharma]{Sharma}{2023}{sharma_monopsony_2023}
+{\bf Sharma, Garima}, ``Monopsony and the {Gender} {Pay} {Gap},'' 2023.
+\newblock Working paper.
+
+\harvarditem[Sokolova and Sorensen]{Sokolova and Sorensen}{2021}{sokolova_monopsony_2021}
+{\bf Sokolova, Anna and Todd Sorensen}, ``Monopsony in Labor Markets: A Meta-Analysis,'' {\it ILR Review}, 2021, {\it 74} (1), 27--55.
+
+\harvarditem[Webber]{Webber}{2016}{webber_firm-level_2016}
+{\bf Webber, Douglas~A.}, ``Firm-{Level} {Monopsony} and the {Gender} {Pay} {Gap},'' {\it Industrial Relations: A Journal of Economy and Society}, 2016, {\it 55} (2), 323--345.
+\newblock \_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/irel.12142.
+
+\harvarditem[Xiao]{Xiao}{2021}{Xiao}
+{\bf Xiao, Pengpeng}, ``Wage and Employment Discrimination by Gender in Labor Market Equilibrium,'' Working Papers 144, VATT Institute for Economic Research 2021.
+
+\end{thebibliography}

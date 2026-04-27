@@ -25,9 +25,8 @@ from pyspark.sql import SparkSession
 # SECTION 0 — Config
 # ==============================================================================
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__name__))
-FIG_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "figures")
-INT_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "data", "intermediate")
+FIG_DIR = "/Users/sofiavaldivia/Documents/GitHub/Chile_BUK_CNS/BUK_sofia/1_Code/figures"
+INT_DIR = "/Users/sofiavaldivia/Documents/GitHub/Chile_BUK_CNS/BUK_sofia/1_Code/data/intermediate"
 os.makedirs(FIG_DIR, exist_ok=True)
 os.makedirs(INT_DIR, exist_ok=True)
 
@@ -212,7 +211,7 @@ entry_dist = sql("""
            floor(entry_wage / 100000) * 100000 as salary_bin,
            count(*) as n
     FROM entry_wage
-    WHERE entry_wage <= 5000000
+    WHERE entry_wage > 0 AND entry_wage <= 2000000
     GROUP BY gender, floor(entry_wage / 100000) * 100000
     ORDER BY salary_bin
 """)
@@ -222,7 +221,7 @@ entry_dist = sql("""
 box_data = sql("""
     SELECT gender, entry_wage
     FROM entry_wage
-    WHERE entry_wage BETWEEN 100000 AND 2000000
+    WHERE entry_wage > 0 AND entry_wage <= 2000000
 """)
 
 fig, ax = plt.subplots(figsize=(6, 5.5))
@@ -243,7 +242,7 @@ bp["boxes"][1].set_facecolor(PAL_MALE)
 # Add median labels
 for i, (wages, g) in enumerate([(f_wages, "F"), (m_wages, "M")]):
     med = np.median(wages)
-    ax.text(i + 1, med, f"  {med:,.0f} CLP", va="center", fontsize=10, fontweight="bold")
+    ax.text(i + 1, med -15000, f"  {med:,.0f} CLP", ha="center", va = "top", fontsize=9, color = "white", fontweight="bold")
 
 ax.set_ylabel("Entry wage (CLP)")
 ax.set_title("Entry Wage by Gender", pad=20)
@@ -252,7 +251,7 @@ fig.text(0.5, 0.90, "Base salary at first observed payroll period",
 n_total = len(box_data)
 fig.text(0.01, -0.04,
          f"Source: BUK payroll data (Chile). N = {n_total:,} employee-tenant entries. "
-         f"Trimmed to 100K–2M CLP, outliers hidden.",
+         f"Capped at 2M CLP, outliers hidden.",
          fontsize=9, color="#999999")
 fig.tight_layout()
 save_plot(fig, "rf_3_4_entry_wage_by_gender")
@@ -261,34 +260,68 @@ del box_data
 gc.collect()
 
 # ==============================================================================
-# SECTION 3 — Wage profile by tenure
+# SECTION 3 — Wage profile by tenure (cached locally)
 # ==============================================================================
 print("\n" + "=" * 70)
 print("SECTION 3: Wage profile by tenure")
 print("=" * 70)
 
-spark.sql("""
-    CREATE OR REPLACE TEMP VIEW salary_tenure AS
-    SELECT s.employee_id, s.tenant_id, s.base_salary, s.period,
-           cast(months_between(s.period, fp.first_period) as int) as tenure_month,
-           e.gender
-    FROM salary s
-    JOIN first_period fp ON s.employee_id = fp.employee_id
-        AND s.tenant_id = fp.tenant_id
-    JOIN emp_demo e ON s.employee_id = e.employee_id
-    WHERE s.base_salary > 0 AND e.gender IN ('F', 'M')
-""")
+CACHE_PATH = os.path.join(INT_DIR, "wage_profile_by_tenure_gender.parquet")
 
-wage_profile = sql("""
-    SELECT gender, tenure_month,
-           count(*) as n_obs,
-           percentile_approx(base_salary, 0.5) as median_salary,
-           avg(base_salary) as mean_salary
-    FROM salary_tenure
-    WHERE tenure_month >= 0 AND tenure_month <= 60
-    GROUP BY gender, tenure_month
-    ORDER BY tenure_month, gender
-""")
+if os.path.exists(CACHE_PATH):
+    print(f"  Loading cached wage profile from {CACHE_PATH}")
+    wage_profile = pd.read_parquet(CACHE_PATH)
+else:
+    # Process year by year to avoid Delta Sharing connection drops
+    print("  Computing salary-tenure year by year (smaller queries)...")
+    TENURE_SQL = (
+        "SELECT e.gender, "
+        "cast(months_between(s.period, fp.first_period) as int) as tenure_month, "
+        "s.base_salary "
+        "FROM salary s "
+        "JOIN first_period fp ON s.employee_id = fp.employee_id "
+        "AND s.tenant_id = fp.tenant_id "
+        "JOIN emp_demo e ON s.employee_id = e.employee_id "
+        "WHERE s.base_salary > 0 AND e.gender IN ('F', 'M') "
+        "AND year(s.period) = {yr} "
+        "AND months_between(s.period, fp.first_period) >= 0 "
+        "AND months_between(s.period, fp.first_period) <= 60"
+    )
+    yearly_chunks = []
+    for yr in range(2020, 2027):
+        print("    Processing year " + str(yr) + "...")
+        try:
+            chunk = sql(TENURE_SQL.format(yr=yr))
+            if len(chunk) > 0:
+                agg = (chunk.groupby(["gender", "tenure_month"])
+                       .agg(n_obs=("base_salary", "count"),
+                            sum_salary=("base_salary", "sum"),
+                            median_salary=("base_salary", "median"))
+                       .reset_index())
+                yearly_chunks.append(agg)
+                print("      " + str(len(chunk)) + " rows -> " + str(len(agg)) + " cells")
+            del chunk
+            gc.collect()
+        except Exception as e:
+            print("      Year " + str(yr) + " failed: " + str(e) + " -- skipping")
+
+    # Combine yearly chunks: recompute mean from sum/n, take weighted median approx
+    combined = pd.concat(yearly_chunks, ignore_index=True)
+    wage_profile = (
+        combined.groupby(["gender", "tenure_month"])
+        .agg(n_obs=("n_obs", "sum"),
+             sum_salary=("sum_salary", "sum"),
+             median_salary=("median_salary", "mean"))  # approx: average of yearly medians
+        .reset_index()
+    )
+    wage_profile["mean_salary"] = wage_profile["sum_salary"] / wage_profile["n_obs"]
+    wage_profile = wage_profile.drop(columns=["sum_salary"]).sort_values(["tenure_month", "gender"])
+
+    wage_profile.to_parquet(CACHE_PATH)
+    print(f"  Cached wage profile to {CACHE_PATH}")
+    del combined, yearly_chunks
+    gc.collect()
+
 print(f"  Wage profile rows: {len(wage_profile):,}")
 wage_profile.to_csv(os.path.join(INT_DIR, "wage_profile_by_tenure_gender.csv"), index=False)
 
@@ -415,7 +448,7 @@ try:
         m_w = entry_hhi[(entry_hhi["hhi_tercile"] == t) & (entry_hhi["gender"] == "M")]["median_wage"].values
         if len(f_w) > 0 and len(m_w) > 0:
             gap_pct = (f_w[0] - m_w[0]) / m_w[0] * 100
-            y_pos = max(f_w[0], m_w[0]) + 20000
+            y_pos = max(f_w[0], m_w[0]) + 35000
             ax.text(t_idx, y_pos, f"gap: {gap_pct:+.1f}%",
                     ha="center", fontsize=9, color="#666666", style="italic")
 
